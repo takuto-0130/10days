@@ -45,6 +45,7 @@ void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const M
 }
 
 
+
 void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float& scroll, const float& t) {
 	Vector2 pos = Lerp(returnPos, startPos, t);
 	if (kResetPos.x < pos.x) {
@@ -106,7 +107,7 @@ void TestGetVel(Player& player,Vector2& vel,Vector2& startPosition,float angle/*
 	p.x = startPosition.x + std::cos(angle) * r.x;
 	p.y = startPosition.y + std::sin(angle) * r.y;
 
-
+	vel;
 
 }
 
