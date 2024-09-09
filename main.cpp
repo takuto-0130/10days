@@ -54,16 +54,18 @@ void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Ve
 }
 
 
-void Refrect(Player& player, const MapChipNum map) {
+void Refrect(Player& player, const MapChipNum map, bool& isShot) {
 	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
 		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
 		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
 		player.direction.x = -2.0f;
+		isShot = false;
 	}
 	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
 		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
 		player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
 		player.direction.x = 2.0f;
+		isShot = false;
 	}
 }
 
@@ -87,9 +89,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int block = Novice::LoadTexture("white1x1.png");
 	int titleTex = Novice::LoadTexture("./Resources/title.png");
 
-	int numberTex = Novice::LoadTexture("./Resources/number.png");
-	int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
-	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
+	//int numberTex = Novice::LoadTexture("./Resources/number.png");
+	//int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
+	//int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
 
 
 	MapChipNum map{};
@@ -255,6 +257,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							t = 0;
 							tReturnNow = 0;
 						}
+						//Refrect(player, map, isShot);
 					}
 					if (!isShot && isMove) {
 						if (t <= 1.0f) {
@@ -280,7 +283,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						ImGui::End();*/
 #endif // _DEBUG
 
-						Refrect(player, map);
 
 						Vector2 stopPositionNow = vec + startPosition;
 						ReturnPosition(player, startPosition, stopPositionNow, map, t);
