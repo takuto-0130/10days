@@ -130,7 +130,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Function.h" />
-    <ClInclude Include="BrockEmitter.h" />
     <ClInclude Include="BrockParticle.h" />
+    <ClInclude Include="BrockEmitter.h" />
   </ItemGroup>
 </Project>

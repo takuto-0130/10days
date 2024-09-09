@@ -4,6 +4,8 @@
 #include <imgui.h>
 #endif // _DEBUG
 
+#include <cmath>
+
 
 const char kWindowTitle[] = "10daysTest";
 
@@ -56,15 +58,56 @@ void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Ve
 
 void Refrect(Player& player, const MapChipNum map) {
 	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
+		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+	{
 		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
 		player.direction.x = -2.0f;
 	}
 	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
+		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) 
+	{
 		player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
 		player.direction.x = 2.0f;
 	}
+}
+
+
+void TestBlockSideHit(Player& player,const MapChipNum map,Vector2& start,Vector2& stop , bool& kabe) {
+	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&// 後でorにするここの&&
+		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+	{
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x + 100.0f,start.y };
+		}
+
+		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+		
+		kabe = true;
+	} 
+}
+
+
+void TestBlockLerp(Player& player,Vector2& start,Vector2& stop,float& t)
+{
+
+	player.direction = { 0,0 };
+
+	player.worldPos = Lerp(start, stop, t * t * t);
+}
+
+void TestGetVel(Player& player,Vector2& vel,Vector2& startPosition,float angle/*playerShotAngle*/)
+{
+	Vector2 r = player.worldPos - startPosition;
+	Vector2 p = {};
+
+	p.x = startPosition.x + std::cos(angle) * r.x;
+	p.y = startPosition.y + std::sin(angle) * r.y;
+
+
+
 }
 
 // キー入力結果を受け取る箱
@@ -87,9 +130,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int block = Novice::LoadTexture("white1x1.png");
 	int titleTex = Novice::LoadTexture("./Resources/title.png");
 
-	int numberTex = Novice::LoadTexture("./Resources/number.png");
-	int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
-	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
+	//int numberTex = Novice::LoadTexture("./Resources/number.png");
+	//int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
+	//int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
 
 
 	MapChipNum map{};
@@ -166,6 +209,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint32_t breakCount = 0;
 	ScoreDisp score{};
 
+
+
+	/////////////////////////////////////////////////////////////////////
+
+	Vector2 start1 = {};
+	Vector2 stop1 = {};
+	float t1 = 0;
+	float tIncrease1 = 0.01f;
+	bool kabe = false;
+
+	Vector2 velocity = {};
+
+	////////////////////////////////////////////////////////////////////
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -211,19 +268,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					if (!isShot && !isMove && !isReturn) {
 						player.direction = { 0,0 };
 						player.resistance = 0;
-						/*if (keys[DIK_A]) {
-							player.direction.x--;
-						}
-						if (keys[DIK_D]) {
-							player.direction.x++;
-						}*/
 
-						/*if (keys[DIK_W] || keys[DIK_UP]) {
-							player.direction.y--;
-						}
-						if (keys[DIK_S] || keys[DIK_DOWN]) {
-							player.direction.y++;
-						}*/
+						kabe = false;
 
 						if (keys[DIK_LEFT] || keys[DIK_A]) {
 							playerShotAngle += kPlayerChangeAngle;
@@ -254,36 +300,95 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							playerShotAngle = 0;
 							t = 0;
 							tReturnNow = 0;
+
+							kabe = false;
+						}
+
+						TestBlockSideHit(player, map, start1,stop1, kabe);
+
+						if (kabe)
+						{
+							
+							TestBlockLerp(player, start1, stop1, t1);
+
+							if (t1 < 1.0f)
+							{
+								t1 += tIncrease1;
+							}
+							else {
+
+								isShot = false;
+								kabe = false;
+								t1 = 0;
+								t = 0;
+								isMove = true;
+
+								stopPosition = player.worldPos;
+
+								playerShotAngle = 0;
+								tReturnNow = 0;
+							}
 						}
 					}
+
+
+
 					if (!isShot && isMove) {
+
 						if (t <= 1.0f) {
-							t += tIncrease;
+
+							if (!kabe)
+							{
+								t += tIncrease;
+							}
+
 						}
-						else {
+						else{
 							isMove = false;
 							isReturn = true;
 							playerShotAngle = 0;
 							t = 0;
-						}
-						if (keys[DIK_LEFT] || keys[DIK_A]) {
-							playerShotAngle += kMoveChangeAngle;
-						}
-						if (keys[DIK_RIGHT] || keys[DIK_D]) {
-							playerShotAngle -= kMoveChangeAngle;
-						}
-						Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
-						Vector2 vec = Transform(stopPosition - startPosition, rotate);
-#ifdef _DEBUG
-						/*ImGui::Begin("window");
-						ImGui::Text("%f, %f", vec.x, vec.y);
-						ImGui::End();*/
-#endif // _DEBUG
 
-						Refrect(player, map);
+							kabe = false;
+						}
 
-						Vector2 stopPositionNow = vec + startPosition;
-						ReturnPosition(player, startPosition, stopPositionNow, map, t);
+						TestBlockSideHit(player, map, start1, stop1, kabe);
+
+						if (kabe)
+						{
+
+							TestBlockLerp(player, start1, stop1, t1);
+
+							if (t1 <= 1.0f)
+							{
+								t1 += tIncrease1;
+							}
+							else {
+								kabe = false;
+								t1 = 0;
+
+								stopPosition = player.worldPos;
+
+								playerShotAngle = 0;
+								tReturnNow = 0;
+							}
+						}
+
+						if (!kabe)
+						{
+							if (keys[DIK_LEFT] || keys[DIK_A]) {
+								playerShotAngle += kMoveChangeAngle;
+							}
+							if (keys[DIK_RIGHT] || keys[DIK_D]) {
+								playerShotAngle -= kMoveChangeAngle;
+							}
+
+							Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
+							Vector2 vec = Transform(stopPosition - startPosition, rotate);
+
+							Vector2 stopPositionNow = vec + startPosition;
+							ReturnPosition(player, startPosition, stopPositionNow, map, t);
+						}
 					}
 
 					if (isReturn) {
@@ -315,13 +420,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				blockParticle->Update();
 
-				/*if (kResetPos.x < startPosition.x) {
-					scroll = kResetPos.x - startPosition.x;
-				}
-				else {
-					scroll = 0;
-				}*/
-
 #ifdef _DEBUG
 				ImGui::Begin("window");
 				ImGui::Text("%d", hitStopTimer);
@@ -329,6 +427,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ImGui::Text("%f", t);
 				ImGui::InputFloat2("return", &startPosReturn.x);
 				ImGui::InputFloat2("startpos", &startPosition.x);
+
+				ImGui::Checkbox("kabe", &kabe);
+				ImGui::Checkbox("isShot", &isShot);
+				ImGui::Text("%f", t1);
+
 				ImGui::End();
 #endif // _DEBUG
 				player.center = player.worldPos;
@@ -383,6 +486,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			t = 0;
 			tReturnNow = 0;
 			scroll = 0;
+
+
+			/////////////////////////////////
+			kabe = false;
 		}
 
 		///
