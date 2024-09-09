@@ -44,6 +44,15 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Function.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="BrockEmitter.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="BrockParticle.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -120,5 +129,8 @@
     <ClInclude Include="PositionSwap.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Struct.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="BrockEmitter.h" />
+    <ClInclude Include="BrockParticle.h" />
   </ItemGroup>
 </Project>
