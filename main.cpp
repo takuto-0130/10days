@@ -73,8 +73,8 @@ void Refrect(Player& player, const MapChipNum map) {
 }
 
 
-void TestBlockSideHit(Player& player,const MapChipNum map,Vector2& start,Vector2& stop , bool& kabe) {
-	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&// 後でorにするここの&&
+void TestBlockLeftHit(Player& player,const MapChipNum map,Vector2& start,Vector2& stop , bool& kabe) {
+	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&
 		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
 	{
 
@@ -90,13 +90,45 @@ void TestBlockSideHit(Player& player,const MapChipNum map,Vector2& start,Vector2
 	} 
 }
 
+void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe) {
+	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&
+		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+	{
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x - 100.0f,start.y };
+		}
+
+		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+
+		kabe = true;
+	}
+}
+
+void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe) {
+	if (map.mapData[int(player.lb.y) / blockSize][int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize] == 1 &&
+		map.mapData[int(player.rb.y) / blockSize][int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize] == 1)
+	{
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x,start.y - 100.0f };
+		}
+
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
+
+		kabe = true;
+	}
+}
+
 
 void TestBlockLerp(Player& player,Vector2& start,Vector2& stop,float& t)
 {
-
 	player.direction = { 0,0 };
 
-	player.worldPos = Lerp(start, stop, t * t * t);
+	player.worldPos = Lerp(start, stop, t);
 }
 
 void TestGetVel(Player& player,Vector2& vel,Vector2& startPosition,float angle/*playerShotAngle*/)
@@ -305,7 +337,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							kabe = false;
 						}
 
-						TestBlockSideHit(player, map, start1,stop1, kabe);
+						TestBlockLeftHit(player, map, start1,stop1, kabe);
+
+						TestBlockRightHit(player, map, start1, stop1, kabe);
+
+						TestBlocUnderHit(player, map, start1, stop1, kabe);
 
 						if (kabe)
 						{
@@ -353,7 +389,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							kabe = false;
 						}
 
-						TestBlockSideHit(player, map, start1, stop1, kabe);
+						TestBlockLeftHit(player, map, start1, stop1, kabe);
+
+						TestBlockRightHit(player, map, start1, stop1, kabe);
+
+						TestBlocUnderHit(player, map, start1, stop1, kabe);
 
 						if (kabe)
 						{
