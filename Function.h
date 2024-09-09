@@ -54,7 +54,15 @@ Vector2 operator*(const float& s, const Vector2& v);
 Vector2 operator/(const Vector2& v, const float& s);
 
 Vector2 Lerp(const Vector2& v1, const Vector2& v2, float t);
+float Length(const Vector2& v);
 void TimeDisplay(const uint32_t time, Timedisp& a);
 void ScoreDisplay(const uint32_t score, ScoreDisp& a);
 #pragma endregion
 
+void ReturnPosition(Player& player, const Vector2& startPos, const MapChipNum map);
+
+void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const MapChipNum map, float& t);
+
+void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t);
+
+void Refrect(Player& player, const MapChipNum map, bool& isShot);
