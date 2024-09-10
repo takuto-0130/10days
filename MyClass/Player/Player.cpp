@@ -239,13 +239,19 @@ void PlayerClass::Operation(const char* keys)
 				// Y軸周り角度(θy)
 				angle = std::atan2(-move.x, -move.y);
 			}
+			if (playerShotAngle < angle) {
+				playerShotAngle += kMoveChangeAngle;
+			}
+			if (playerShotAngle > angle) {
+				playerShotAngle -= kMoveChangeAngle;
+			}
 		}
 
 
-		if (keys[DIK_LEFT] || keys[DIK_A] || playerShotAngle < angle) {
+		if (keys[DIK_LEFT] || keys[DIK_A]) {
 			playerShotAngle += kMoveChangeAngle;
 		}
-		if (keys[DIK_RIGHT] || keys[DIK_D] || playerShotAngle > angle) {
+		if (keys[DIK_RIGHT] || keys[DIK_D]) {
 			playerShotAngle -= kMoveChangeAngle;
 		}
 		Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
