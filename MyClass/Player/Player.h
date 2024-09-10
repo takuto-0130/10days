@@ -38,6 +38,9 @@ private:
 	float* scroll_ = nullptr;	// スクロール値のポインタ
 
 	int playerTex = 0;	// プレイヤーのテクスチャハンドル
+	int playerTex2 = 0;	// プレイヤーのテクスチャハンドル
+
+	Vector2 topPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 
 public:
 

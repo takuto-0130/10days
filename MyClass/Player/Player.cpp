@@ -23,6 +23,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	startPosition = kResetPos;
 	startPosReturn = kResetPos;
 	stopPosition = kResetPos;
+	topPosition = kResetPos;
 
 	playerShotAngle = 0;
 
@@ -40,7 +41,8 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	tReturn = 0.02f;
 	SetMap(map);
 	SetScroll(scroll);
-	playerTex = Novice::LoadTexture("./Resources/playerRect.png");
+	playerTex = Novice::LoadTexture("./Resources/leg.png");
+	playerTex2 = Novice::LoadTexture("./Resources/body.png");
 }
 
 PlayerClass::~PlayerClass()
@@ -67,6 +69,7 @@ void PlayerClass::Initialize()
 	startPosition = kResetPos;
 	startPosReturn = kResetPos;
 	stopPosition = kResetPos;
+	topPosition = kResetPos;
 
 	playerShotAngle = 0;
 
@@ -132,11 +135,17 @@ void PlayerClass::Draw()
 		Novice::DrawLine(int(startPosition.x) + int(*scroll_), int(startPosition.y), int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y), 0xFFFFFFFF);
 	}
 	Novice::DrawQuad(
+		int(topPosition.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y - (player_.len.y + player_.sizeChange.y) / 2 - blockSize),
+		int(topPosition.x + (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y - (player_.len.y + player_.sizeChange.y) / 2 - blockSize),
+		int(topPosition.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y + (player_.len.y + player_.sizeChange.y) / 2 - blockSize),
+		int(topPosition.x + (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y + (player_.len.y + player_.sizeChange.y) / 2 - blockSize),
+		0, 0, blockSize, blockSize, playerTex2, 0xFFFFFFFF);
+	Novice::DrawQuad(
 		int(player_.center.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y - (player_.len.y + player_.sizeChange.y) / 2),
 		int(player_.center.x + (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y - (player_.len.y + player_.sizeChange.y) / 2),
 		int(player_.center.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y + (player_.len.y + player_.sizeChange.y) / 2),
 		int(player_.center.x + (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y + (player_.len.y + player_.sizeChange.y) / 2),
-		32, 0, blockSize, blockSize, playerTex, 0xFFFFFFFF);
+		0, 0, blockSize, blockSize, playerTex, 0xFFFFFFFF);
 }
 
 void PlayerClass::AngleSet(const char* keys, const char* preKeys)
@@ -274,6 +283,6 @@ void PlayerClass::ScreenScroll()
 		else {
 			isReturn = false;
 		}
-		ScrollPosition(kResetPos, startPosReturn, startPosition, scroll_, tReturnNow);
+		ScrollPosition(kResetPos, startPosReturn, startPosition, scroll_, tReturnNow, topPosition);
 	}
 }
