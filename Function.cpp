@@ -402,3 +402,74 @@ void Refrect(Player& player, const MapChipNum map, bool& isShot) {
 		isShot = false;
 	}
 }
+
+
+void TestBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k) {
+	if (map.mapData[int(player.lt.y + k) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
+		map.mapData[int(player.lb.y - k) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+	{
+
+		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x + distance,start.y };
+		}
+
+		kabe = true;
+	}
+}
+
+void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k) {
+	if (map.mapData[int(player.rt.y + k) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
+		map.mapData[int(player.rb.y - k) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+	{
+
+		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x - distance,start.y };
+		}
+
+		kabe = true;
+	}
+}
+
+void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance) {
+	if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lb.x) / blockSize] == 1 ||
+		map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.rb.x) / blockSize] == 1)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x,start.y - distance };
+		}
+
+		kabe = true;
+	}
+}
+
+
+void TestBlockLerp(Player& player, Vector2& start, Vector2& stop, float& t)
+{
+	player.direction = { 0,0 };
+
+	player.worldPos = Lerp(start, stop, t);
+}
+
+void TestGetVel(Player& player, float& speed, Vector2& startPosition, const float angle, const float frameAngle/*playerShotAngle*/)
+{
+	Vector2 r = player.worldPos - startPosition;
+	float len = Length(r);
+	Vector2 p = {};
+
+	p.x = startPosition.x + std::cos(angle) * r.x;
+	p.y = startPosition.y + std::sin(angle) * r.y;
+
+	speed = len * frameAngle;
+}

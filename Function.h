@@ -66,3 +66,13 @@ void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const M
 void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t, Vector2& topPos);
 
 void Refrect(Player& player, const MapChipNum map, bool& isShot);
+
+void TestBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k);
+
+void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k);
+
+void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance);
+
+void TestBlockLerp(Player& player, Vector2& start, Vector2& stop, float& t);
+
+void TestGetVel(Player& player, float& speed, Vector2& startPosition, const float angle, const float frameAngle);
