@@ -43,6 +43,14 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	SetScroll(scroll);
 	playerTex = Novice::LoadTexture("./Resources/leg.png");
 	playerTex2 = Novice::LoadTexture("./Resources/body.png");
+
+	start1 = {};
+	stop1 = {};
+	t1 = 0;
+	kabe = false;
+
+	velocity = {};
+	speed = {};
 }
 
 PlayerClass::~PlayerClass()
@@ -87,6 +95,14 @@ void PlayerClass::Initialize()
 	tReturn = 0.02f;
 
 	*scroll_ = 0;
+
+	start1 = {};
+	stop1 = {};
+	t1 = 0;
+	kabe = false;
+
+	velocity = {};
+	speed = {};
 }
 
 void PlayerClass::Update(const char* keys, const char* preKeys)

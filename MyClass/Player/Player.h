@@ -42,6 +42,23 @@ private:
 
 	Vector2 topPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 
+
+	/////////////////////////////////////////////////////////////////////
+
+	Vector2 start1 = {};
+	Vector2 stop1 = {};
+	float t1 = 0;
+	float tIncrease1 = 0.04f;
+	bool kabe = false;
+
+	const float kHitMisalignment = 1.0f; // 力技の 1 ずらし
+	float kMoveDistance = 100.0f; // ブロックに当たったときに進む距離
+
+	Vector2 velocity = {};
+	float speed = {};
+
+	////////////////////////////////////////////////////////////////////
+
 public:
 
 	/// <summary>
