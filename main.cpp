@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-
+#ifdef _DEBUG
 
 		if (preKeys[DIK_R] == 0 && keys[DIK_R] != 0)
 		{
@@ -119,6 +119,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			breakCount = 0;
 			playerClass->Initialize();
 		}
+#endif // _DEBUG
+
 
 		///
 		/// ↑更新処理ここまで
