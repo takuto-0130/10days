@@ -57,31 +57,17 @@ void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Ve
 }
 
 
-void Refrect(Player& player, const MapChipNum map) {
-	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
-	{
-		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
-		player.direction.x = -2.0f;
-	}
-	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) 
-	{
-		player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
-		player.direction.x = 2.0f;
-	}
-}
 
 
-void TestBlockLeftHit(Player& player,const MapChipNum map,Vector2& start,Vector2& stop , bool& kabe) {
-	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&
-		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+void TestBlockLeftHit(Player& player,const MapChipNum map,Vector2& start,Vector2& stop , bool& kabe, float distance,float k) {
+	if (map.mapData[int(player.lt.y + k) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
+		map.mapData[int(player.lb.y - k) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
 	{
 
 		if (!kabe)
 		{
 			start = player.worldPos;
-			stop = { start.x + 100.0f,start.y };
+			stop = { start.x + distance,start.y };
 		}
 
 		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
@@ -90,15 +76,15 @@ void TestBlockLeftHit(Player& player,const MapChipNum map,Vector2& start,Vector2
 	} 
 }
 
-void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe) {
-	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 &&
-		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
+void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance,float k) {
+	if (map.mapData[int(player.rt.y + k) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
+		map.mapData[int(player.rb.y - k) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1)
 	{
 
 		if (!kabe)
 		{
 			start = player.worldPos;
-			stop = { start.x - 100.0f,start.y };
+			stop = { start.x - distance,start.y };
 		}
 
 		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
@@ -107,14 +93,14 @@ void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vec
 	}
 }
 
-void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe) {
-	if (map.mapData[int(player.lb.y) / blockSize][int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize] == 1 &&
-		map.mapData[int(player.rb.y) / blockSize][int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize] == 1)
+void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe,float distance) {
+	if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lb.x) / blockSize] == 1 ||
+		map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.rb.x) / blockSize] == 1)
 	{
 		if (!kabe)
 		{
 			start = player.worldPos;
-			stop = { start.x,start.y - 100.0f };
+			stop = { start.x,start.y - distance };
 		}
 
 		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
@@ -252,6 +238,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float tIncrease1 = 0.01f;
 	bool kabe = false;
 
+	const float kHitMisalignment = 1.0f; // 力技の 1 ずらし
+	const float kMoveDistance = 100.0f; // ブロックに当たったときに進む距離
+
 	Vector2 velocity = {};
 
 	////////////////////////////////////////////////////////////////////
@@ -337,11 +326,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							kabe = false;
 						}
 
-						TestBlockLeftHit(player, map, start1,stop1, kabe);
+						TestBlockLeftHit(player, map, start1,stop1, kabe,kMoveDistance,kHitMisalignment);
 
-						TestBlockRightHit(player, map, start1, stop1, kabe);
+						TestBlockRightHit(player, map, start1, stop1, kabe,kMoveDistance,kHitMisalignment);
 
-						TestBlocUnderHit(player, map, start1, stop1, kabe);
+						TestBlocUnderHit(player, map, start1, stop1, kabe,kMoveDistance);
 
 						if (kabe)
 						{
@@ -389,11 +378,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							kabe = false;
 						}
 
-						TestBlockLeftHit(player, map, start1, stop1, kabe);
+						TestBlockLeftHit(player, map, start1, stop1, kabe, kMoveDistance, kHitMisalignment);
 
-						TestBlockRightHit(player, map, start1, stop1, kabe);
+						TestBlockRightHit(player, map, start1, stop1, kabe,kMoveDistance, kHitMisalignment);
 
-						TestBlocUnderHit(player, map, start1, stop1, kabe);
+						TestBlocUnderHit(player, map, start1, stop1, kabe, kMoveDistance);
 
 						if (kabe)
 						{
