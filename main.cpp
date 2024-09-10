@@ -27,9 +27,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int block = Novice::LoadTexture("white1x1.png");
 	//int titleTex = Novice::LoadTexture("./Resources/title.png");
 
-	//int numberTex = Novice::LoadTexture("./Resources/number.png");
-	//int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
-	//int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
+	int numberTex = Novice::LoadTexture("./Resources/number.png");
+	int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
+	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
 
 
 	MapChipNum map{};	// マップチップのデータを保存
@@ -156,16 +156,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		playerClass->Draw();
 
-		//Novice::DrawSprite(0, 0, timeFrame, 1.0f, 1.0f, 0.0f, WHITE);
-		//for (int i = 0; i < 2; i++)
-		//{
-		//	Novice::DrawSpriteRect(/*118*/5+ 40 * i, 5, 64 * timeDisplay.seconds[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
-		//}
-		//Novice::DrawSprite(524, 640, scoreFrame, 1.0f, 1.0f, 0.0f, WHITE);;
-		//for (int i = 0; i < 3; i++)
-		//{
-		//	Novice::DrawSpriteRect(555 + 40 * i, 643, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
-		//}
+		Novice::DrawSprite(0, 0, timeFrame, 1.0f, 1.0f, 0.0f, WHITE);
+		for (int i = 0; i < 2; i++)
+		{
+			Novice::DrawSpriteRect(/*118*/5+ 40 * i, 5, 64 * timeDisplay.seconds[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
+		}
+		Novice::DrawSprite(524, 640, scoreFrame, 1.0f, 1.0f, 0.0f, WHITE);;
+		for (int i = 0; i < 3; i++)
+		{
+			Novice::DrawSpriteRect(555 + 40 * i, 643, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
+		}
 
 		///
 		/// ↑描画処理ここまで
