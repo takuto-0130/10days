@@ -63,6 +63,6 @@ void ReturnPosition(Player& player, const Vector2& startPos, const MapChipNum ma
 
 void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const MapChipNum map, float& t);
 
-void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t);
+void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t, Vector2& topPos);
 
 void Refrect(Player& player, const MapChipNum map, bool& isShot);
