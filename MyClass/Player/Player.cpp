@@ -63,6 +63,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	globalVariables->AddItem(groupName, "playerScroll T", tReturn);
 	globalVariables->AddItem(groupName, "playerRefrect Distance", kMoveDistance);
 	globalVariables->AddItem(groupName, "playerShot DistanceLimit", kPlayerLimitDistance);
+	globalVariables->AddItem(groupName, "blockResistPower default(0.15f)", kResistPower);
 }
 
 PlayerClass::~PlayerClass()
@@ -127,6 +128,7 @@ void PlayerClass::ApplyGlobalVariables() {
 	tReturn = globalVariables->GetFloatValue(groupName, "playerScroll T");
 	kMoveDistance = globalVariables->GetFloatValue(groupName, "playerRefrect Distance");
 	kPlayerLimitDistance = globalVariables->GetFloatValue(groupName, "playerShot DistanceLimit");
+	kResistPower = globalVariables->GetFloatValue(groupName, "blockResistPower default(0.15f)");
 }
 
 void PlayerClass::Update(const char* keys, const char* preKeys)

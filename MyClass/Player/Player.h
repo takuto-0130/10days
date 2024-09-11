@@ -12,7 +12,7 @@ private:
 	Player player_{};	// プレイヤー本体
 	MapChipNum* map_ = nullptr;	//マップチップのポインタ
 
-	Vector2 kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };	//プレイヤーの初期位置
+	Vector2 kResetPos = { 19 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };	//プレイヤーの初期位置
 	Vector2 startPosition = kResetPos;	//プレイヤーのスタート位置
 	Vector2 startPosReturn = kResetPos;	//プレイヤーのスクロールスタート位置
 	Vector2 stopPosition = kResetPos;	//プレイヤーの射出後にとまった位置
