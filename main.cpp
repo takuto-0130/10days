@@ -147,22 +147,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			for (int j = 0; j < mapChipWidth; j++)
 			{
-				//if(j * blockSize)
-				if (map.mapData[i][j] == 1)
+				if (((j * blockSize) + scroll > -blockSize) && ((j * blockSize) + scroll < 1312))
 				{
-					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, mapTex, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
-				}
-				if (map.mapData[i][j] == 3)
-				{
-					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
-				}
-				if (map.mapData[i][j] == 4)
-				{
-					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0x9999FFFF);
-				}
-				if (map.mapData[i][j] == 2)
-				{
-					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, 1, 1, block, 32.0f, 32.0f, 0.0f, 0x55AA55FF);
+					if (map.mapData[i][j] == 1)
+					{
+						Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, mapTex, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+					}
+					if (map.mapData[i][j] == 3)
+					{
+						Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+					}
+					if (map.mapData[i][j] == 4)
+					{
+						Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0x9999FFFF);
+					}
+					if (map.mapData[i][j] == 2)
+					{
+						Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, 1, 1, block, 32.0f, 32.0f, 0.0f, 0x55AA55FF);
+					}
 				}
 			}
 		}
