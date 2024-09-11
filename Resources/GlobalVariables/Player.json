@@ -1,0 +1,12 @@
+{
+    "Player": {
+        "playerRefrect Distance": 100.0,
+        "playerReturn T": 0.009999999776482582,
+        "playerScroll T": 0.019999999552965164,
+        "playerShot DistanceLimit": 450.0,
+        "playerSpeed": [
+            7.0,
+            7.0
+        ]
+    }
+}

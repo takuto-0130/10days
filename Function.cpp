@@ -28,7 +28,7 @@ Vector2 Normalize(Vector2 v) {
 	float denominator = sqrtf(v.x * v.x + v.y * v.y);
 	Vector2 result = { 0,0 };
 	if (denominator != 0) {
-		result = { sqrtf(v.x * v.x) / denominator, sqrtf(v.y * v.y) / denominator };
+		result = { v.x / denominator, v.y / denominator };
 	}
 	return result;
 }
@@ -188,11 +188,8 @@ void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& st
 	}
 }
 
-void PlayerMapCollision(MapChipNum& map, Player& player) {
-	if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lb.x) / blockSize] == 0 &&
-		map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.rb.x) / blockSize] == 0) {
-		player.isAir = 1;
-	}
+void PlayerMapCollision(MapChipNum& map, Player& player, const Vector2& shotDir) {
+
 	if (player.isAir == 0)
 	{
 		if (player.direction.x > 0)
@@ -201,6 +198,7 @@ void PlayerMapCollision(MapChipNum& map, Player& player) {
 				map.mapData[int(player.rb.y - player.tempVelo.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
 				player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
 				player.direction.x = 0;
+				player.resistance = shotDir.y;
 			}
 		}
 		if (player.direction.x < 0)
@@ -209,6 +207,7 @@ void PlayerMapCollision(MapChipNum& map, Player& player) {
 				map.mapData[int(player.lb.y - player.tempVelo.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
 				player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
 				player.direction.x = 0;
+				player.resistance = shotDir.y;
 			}
 		}
 		if (map.mapData[int(player.lt.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lt.x) / blockSize] == 1 ||
@@ -216,6 +215,7 @@ void PlayerMapCollision(MapChipNum& map, Player& player) {
 			player.worldPos.y = float(int(player.rt.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2 + blockSize;
 			player.direction.y = 0;
 			player.tempVelo.y = 0;
+			player.resistance = shotDir.y;
 		}
 		if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y) + player.tempVelo.y) / blockSize][int(player.lb.x) / blockSize] == 1 ||
 			map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y) + player.tempVelo.y) / blockSize][int(player.rb.x) / blockSize] == 1) {
@@ -223,39 +223,7 @@ void PlayerMapCollision(MapChipNum& map, Player& player) {
 			player.direction.y = 0;
 			player.tempVelo.y = 0;
 			player.isAir = 0;
-		}
-	}
-	else
-	{
-		if (player.direction.x > 0)
-		{
-			if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-				map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
-				player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
-				player.direction.x = 0;
-			}
-		}
-		if (player.direction.x < 0)
-		{
-			if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-				map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
-				player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
-				player.direction.x = 0;
-			}
-		}
-		if (map.mapData[int(player.lt.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lt.x) / blockSize] == 1 ||
-			map.mapData[int(player.rt.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.rt.x) / blockSize] == 1) {
-			player.worldPos.y = float(int(player.rt.y/* + (player.moveSpeed.y * player.direction.y)*/) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2;
-			player.direction.y = 0;
-			player.tempVelo.y = 0;
-			player.velocity.y = 0;
-		}
-		if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y) + player.tempVelo.y) / blockSize][int(player.lb.x) / blockSize] == 1 ||
-			map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y) + player.tempVelo.y) / blockSize][int(player.rb.x) / blockSize] == 1) {
-			player.worldPos.y = float(int(player.rb.y + (player.moveSpeed.y * player.direction.y) + player.tempVelo.y) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
-			player.direction.y = 0;
-			player.tempVelo.y = 0;
-			player.isAir = 0;
+			player.resistance = shotDir.y;
 		}
 	}
 }
@@ -388,17 +356,182 @@ void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Ve
 }
 
 
-void Refrect(Player& player, const MapChipNum map, bool& isShot) {
-	if (map.mapData[int(player.rt.y) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
-		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
-		player.direction.x = -2.0f;
-		isShot = false;
-	}
-	if (map.mapData[int(player.lt.y) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1 ||
-		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 1) {
-		player.worldPos.x = float(int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2 + blockSize;
-		player.direction.x = 2.0f;
-		isShot = false;
+#pragma region // 発射されてる時の反射
+
+
+void TestBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k) {
+	if (map.mapData[int(player.lt.y + k) / blockSize][int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 4 ||
+		map.mapData[int(player.lb.y - k) / blockSize][int(player.lb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 4)
+	{
+
+		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x + distance,start.y };
+		}
+
+		kabe = true;
 	}
 }
+
+void TestBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k) {
+	if (map.mapData[int(player.rt.y + k) / blockSize][int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 4 ||
+		map.mapData[int(player.rb.y - k) / blockSize][int(player.rb.x + (player.moveSpeed.x * player.direction.x)) / blockSize] == 4)
+	{
+
+		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x - distance,start.y };
+		}
+
+		kabe = true;
+	}
+}
+
+void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance) {
+	if (map.mapData[int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.lb.x) / blockSize] == 4 ||
+		map.mapData[int(player.rb.y + (player.moveSpeed.y * player.direction.y)) / blockSize][int(player.rb.x) / blockSize] == 4)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x,start.y - distance };
+		}
+
+		kabe = true;
+	}
+}
+
+
+void TestBlockLerp(Player& player, Vector2& start, Vector2& stop, float& t)
+{
+	player.direction = { 0,0 };
+
+	player.worldPos = Lerp(start, stop, t);
+}
+
+#pragma endregion
+
+
+#pragma region // 動かしてる時の反射
+
+void GetSpeed(Player& player, float& speed, Vector2& startPosition, const float frameAngle)
+{
+	Vector2 r = player.worldPos - startPosition;
+	float len = Length(r);
+
+	speed = len * frameAngle;
+}
+
+void LeftHitMove(Player& player, float& speed, Vector2& startPosition, Vector2& direction, Vector2& v) {
+	Vector2 r = player.worldPos - startPosition;
+	direction = { -r.y, r.x };
+	direction = Normalize(direction);
+	v = direction * speed;
+
+}
+
+void RightHitMove(Player& player, float& speed, Vector2& startPosition, Vector2& direction, Vector2& v) {
+	Vector2 r = player.worldPos - startPosition;
+	direction = { -r.y, r.x };
+	direction = Normalize(direction);
+	v = direction * speed;
+}
+
+
+
+void MoveBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
+	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 1 &&
+		map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 1)
+	{
+		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
+	}
+	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 4 &&
+		map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4)
+	{
+
+		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x + distance,start.y };
+		}
+
+		kabe = true;
+	}
+}
+
+void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
+	if (map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 1 &&
+		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 1)
+	{
+		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+	}
+	if (map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 4 &&
+		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
+	{
+
+		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x - distance,start.y };
+		}
+
+		kabe = true;
+	}
+}
+
+void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
+	if (map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 1 &&
+		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 1)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
+	}
+	if (map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4 &&
+		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x,start.y - distance };
+		}
+
+		kabe = true;
+	}
+}
+
+void MoveBlocUpHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
+	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 1 &&
+		map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 1)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2;
+	}
+
+	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 4 &&
+		map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 4)
+	{
+		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2;
+
+		if (!kabe)
+		{
+			start = player.worldPos;
+			stop = { start.x,start.y + distance };
+		}
+
+		kabe = true;
+	}
+}
+
+#pragma endregion

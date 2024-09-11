@@ -4,6 +4,7 @@
 #include <imgui.h>
 #endif // _DEBUG
 #include "MyClass/Player/Player.h"
+#include "MyClass/GlobalVariables/GlobalVariables.h"
 
 
 const char kWindowTitle[] = "10daysTest";
@@ -34,7 +35,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
 #endif // !_DEBUG
 
-	
+	// グローバル変数の読み込み
+	GlobalVariables::GetInstance()->LoadFiles();
 
 
 	MapChipNum map{};	// マップチップのデータを保存
@@ -78,7 +80,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
+		
+		// グローバル変数の更新処理
+		GlobalVariables::GetInstance()->Update();
 #ifdef _DEBUG
 		ImGui::Begin("window");
 		ImGui::DragFloat("scroll", &scroll, 1.0f);
