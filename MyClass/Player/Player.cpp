@@ -145,7 +145,10 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 
 	FindVertex(player_.worldPos, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
-	PlayerMapCollision(*map_, player_, playerShotDir);
+	if(!isMove)
+	{
+		PlayerMapCollision(*map_, player_, playerShotDir);
+	}
 
 	player_.velocity.y = player_.tempVelo.y;
 	MovePlayer(player_);
@@ -315,6 +318,7 @@ void PlayerClass::Shooting()
 			player_.direction = Transform({ playerShotDir.x, playerShotDir.y - player_.resistance }, rotate);
 		}
 		else {
+			player_.direction = { 0,0 };
 			isShot = false;
 			isMove = true;
 			stopPosition = player_.worldPos;
@@ -324,29 +328,29 @@ void PlayerClass::Shooting()
 
 			kabe = false;
 		}
-		RefrectShooting();
+		//RefrectShooting();
 	}
 }
 
 void PlayerClass::Operation(const char* keys)
 {
 	if (!isShot && isMove) {
-		if (t <= 1.0f) {
-			t += tIncrease;
-		}
-		else {
-			isMove = false;
-			isReturn = true;
-			playerShotAngle = 0;
-			t = 0;
-
-			kabe = false;
-		}
 
 		RefrectMoving();
 
 
 		if (!kabe) {
+			if (t <= 1.0f) {
+				t += tIncrease;
+			}
+			else {
+				isMove = false;
+				isReturn = true;
+				playerShotAngle = 0;
+				t = 0;
+
+				kabe = false;
+			}
 			GetSpeed(player_, speed, startPosition, kMoveChangeAngle);
 			XINPUT_STATE joyState;
 			Vector2 move{ 0, 0 };
