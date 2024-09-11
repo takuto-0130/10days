@@ -392,8 +392,8 @@ void PlayerClass::Operation(const char* keys)
 			ReturnPosition(player_, startPosition, stopPositionNow, *map_, t);
 		}
 	}
-	float a = Length(startPosition - player_.worldPos);
 #ifdef _DEBUG
+	float a = Length(startPosition - player_.worldPos);
 	ImGui::Begin("window");
 	ImGui::Text("%d", isMove);
 	ImGui::Text("%f", t);

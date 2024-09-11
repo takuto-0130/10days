@@ -56,6 +56,9 @@
     <ClCompile Include="MyClass\Player\Player.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="MyClass\GlobalVariables\GlobalVariables.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -136,5 +139,6 @@
     <ClInclude Include="BrockEmitter.h" />
     <ClInclude Include="BrockParticle.h" />
     <ClInclude Include="MyClass\Player\Player.h" />
+    <ClInclude Include="MyClass\GlobalVariables\GlobalVariables.h" />
   </ItemGroup>
 </Project>
