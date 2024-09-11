@@ -62,6 +62,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	globalVariables->AddItem(groupName, "playerReturn T", tIncrease);
 	globalVariables->AddItem(groupName, "playerScroll T", tReturn);
 	globalVariables->AddItem(groupName, "playerRefrect Distance", kMoveDistance);
+	globalVariables->AddItem(groupName, "playerShot DistanceLimit", kPlayerLimitDistance);
 }
 
 PlayerClass::~PlayerClass()
@@ -125,6 +126,7 @@ void PlayerClass::ApplyGlobalVariables() {
 	tIncrease = globalVariables->GetFloatValue(groupName, "playerReturn T");
 	tReturn = globalVariables->GetFloatValue(groupName, "playerScroll T");
 	kMoveDistance = globalVariables->GetFloatValue(groupName, "playerRefrect Distance");
+	kPlayerLimitDistance = globalVariables->GetFloatValue(groupName, "playerShot DistanceLimit");
 }
 
 void PlayerClass::Update(const char* keys, const char* preKeys)
@@ -309,7 +311,7 @@ void PlayerClass::Shooting()
 {
 	if (isShot) {
 		Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
-		if (playerShotDir.y - player_.resistance > kResistPower * 2.0f || Length(startPosition - player_.worldPos) < kPlayerLimitDistance) {
+		if (playerShotDir.y - player_.resistance > kResistPower * 2.0f && Length(startPosition - player_.worldPos) < kPlayerLimitDistance) {
 			player_.direction = Transform({ playerShotDir.x, playerShotDir.y - player_.resistance }, rotate);
 		}
 		else {
@@ -390,6 +392,7 @@ void PlayerClass::Operation(const char* keys)
 			ReturnPosition(player_, startPosition, stopPositionNow, *map_, t);
 		}
 	}
+	float a = Length(startPosition - player_.worldPos);
 #ifdef _DEBUG
 	ImGui::Begin("window");
 	ImGui::Text("%d", isMove);
@@ -397,11 +400,11 @@ void PlayerClass::Operation(const char* keys)
 	ImGui::InputFloat2("return", &startPosReturn.x);
 	ImGui::InputFloat2("startpos", &startPosition.x);
 	ImGui::InputFloat("speed", &speed);
+	ImGui::InputFloat("a", &a);
 
 	ImGui::Checkbox("kabe", &kabe);
 	ImGui::Checkbox("isShot", &isShot);
 	ImGui::Text("%f", t1);
-
 	ImGui::End();
 #endif // _DEBUG
 }
