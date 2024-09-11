@@ -453,6 +453,7 @@ void MoveBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vect
 	{
 		player.worldPos.x = float(int(player.rt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
 	}
+
 	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4)
 	{
@@ -475,6 +476,7 @@ void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vec
 	{
 		player.worldPos.x = float(int(player.lt.x + (player.moveSpeed.x * player.direction.x)) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
 	}
+
 	if (map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
 	{
@@ -497,6 +499,7 @@ void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vect
 	{
 		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
 	}
+
 	if (map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
 	{

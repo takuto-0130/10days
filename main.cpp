@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//int titleTex = Novice::LoadTexture("./Resources/title.png");
 
 #ifndef _DEBUG
-	int numberTex = Novice::LoadTexture("./Resources/number.png");
+	int numberTex = Novice::LoadTexture("./Resources/numberTex.png");
 	int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
 	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
 #endif // !_DEBUG
@@ -177,12 +177,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawSprite(0, 0, timeFrame, 1.0f, 1.0f, 0.0f, WHITE);
 		for (int i = 0; i < 2; i++)
 		{
-			Novice::DrawSpriteRect(/*118*/5 + 40 * i, 5, 64 * timeDisplay.seconds[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
+			Novice::DrawSpriteRect(/*118*/3 + 43 * i, 5, 64 * timeDisplay.seconds[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 		}
 		Novice::DrawSprite(524, 640, scoreFrame, 1.0f, 1.0f, 0.0f, WHITE);;
 		for (int i = 0; i < 3; i++)
 		{
-			Novice::DrawSpriteRect(555 + 40 * i, 643, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xDD69B4FF);
+			Novice::DrawSpriteRect(555 + 40 * i, 643, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 		}
 #endif // !_DEBUG
 
