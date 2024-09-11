@@ -42,6 +42,8 @@ private:
 
 	Vector2 topPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 
+	float kPlayerLimitDistance = 500.0f;
+
 
 	/////////////////////////////////////////////////////////////////////
 
@@ -54,6 +56,7 @@ private:
 	const float kHitMisalignment = 1.0f; // 力技の 1 ずらし
 	float kMoveDistance = 100.0f; // ブロックに当たったときに進む距離
 
+	Vector2 direction{};
 	Vector2 velocity = {};
 	float speed = {};
 
@@ -68,6 +71,9 @@ public:
 	/// <param name="scroll">スクロール値</param>
 	PlayerClass(MapChipNum* map, float* scroll);
 	~PlayerClass();
+
+
+	void ApplyGlobalVariables();
 
 	/// <summary>
 	/// 初期化
@@ -109,6 +115,10 @@ public:
 	/// <param name="keys">キー入力</param>
 	/// <param name="preKeys">前フレームのキー入力</param>
 	void AngleSet(const char* keys, const char* preKeys);
+
+	void RefrectShooting();
+
+	void RefrectMoving();
 
 	/// <summary>
 	/// プレイヤー射出中

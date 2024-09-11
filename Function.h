@@ -5,6 +5,7 @@
 #include <stdio.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 #include <Vector2.h>
 #include "Bullet.h"
 #include "PositionSwap.h"
@@ -37,7 +38,7 @@ void LoadMap(MapChipNum& map, const char* dirName);
 
 void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& stopFrame, int& stopTimer, BrockEmitter* emitter, uint32_t& breakCount);
 
-void PlayerMapCollision(MapChipNum& map, Player& player);
+void PlayerMapCollision(MapChipNum& map, Player& player, const Vector2& shotDir);
 
 
 #pragma region // Vector2
@@ -65,7 +66,8 @@ void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const M
 
 void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t, Vector2& topPos);
 
-void Refrect(Player& player, const MapChipNum map, bool& isShot);
+
+#pragma region // 発射されてる時の反射
 
 void TestBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, float k);
 
@@ -75,4 +77,21 @@ void TestBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vect
 
 void TestBlockLerp(Player& player, Vector2& start, Vector2& stop, float& t);
 
-void TestGetVel(Player& player, float& speed, Vector2& startPosition, const float angle, const float frameAngle);
+#pragma endregion
+
+
+#pragma region // 動かしてる時の反射
+
+void GetSpeed(Player& player, float& speed, Vector2& startPosition, const float frameAngle);
+
+void LeftHitMove(Player& player, float& speed, Vector2& startPosition, Vector2& direction, Vector2& v);
+
+void RightHitMove(Player& player, float& speed, Vector2& startPosition, Vector2& direction, Vector2& v);
+
+void MoveBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v);
+
+void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v);
+
+void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v);
+
+#pragma endregion

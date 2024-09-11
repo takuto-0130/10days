@@ -2,6 +2,7 @@
 #include "Input.h"
 #include <algorithm>
 #include <cmath>
+#include "MyClass/GlobalVariables/GlobalVariables.h"
 
 PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 {
@@ -49,8 +50,18 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	t1 = 0;
 	kabe = false;
 
+	direction = {};
 	velocity = {};
 	speed = {};
+
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+	GlobalVariables::GetInstance()->LoadFiles();
+	globalVariables->AddItem(groupName, "playerSpeed", player_.moveSpeed);
+	globalVariables->AddItem(groupName, "playerReturn T", tIncrease);
+	globalVariables->AddItem(groupName, "playerScroll T", tReturn);
+	globalVariables->AddItem(groupName, "playerRefrect Distance", kMoveDistance);
 }
 
 PlayerClass::~PlayerClass()
@@ -101,12 +112,25 @@ void PlayerClass::Initialize()
 	t1 = 0;
 	kabe = false;
 
+	direction = {};
 	velocity = {};
 	speed = {};
+	ApplyGlobalVariables();
+}
+
+void PlayerClass::ApplyGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	player_.moveSpeed = globalVariables->GetVector2Value(groupName, "playerSpeed");
+	tIncrease = globalVariables->GetFloatValue(groupName, "playerReturn T");
+	tReturn = globalVariables->GetFloatValue(groupName, "playerScroll T");
+	kMoveDistance = globalVariables->GetFloatValue(groupName, "playerRefrect Distance");
 }
 
 void PlayerClass::Update(const char* keys, const char* preKeys)
 {
+	ApplyGlobalVariables();
+
 	AngleSet(keys, preKeys);
 
 	Shooting();
@@ -119,7 +143,7 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 
 	FindVertex(player_.worldPos, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
-	PlayerMapCollision(*map_, player_);
+	PlayerMapCollision(*map_, player_, playerShotDir);
 
 	player_.velocity.y = player_.tempVelo.y;
 	MovePlayer(player_);
@@ -128,13 +152,13 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 	FindVertex(player_.center, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
 
-#ifdef _DEBUG
-	ImGui::Begin("window");
-	ImGui::Text("%f", playerShotAngle);
-	ImGui::InputFloat2("return", &startPosReturn.x);
-	ImGui::InputFloat2("startpos", &startPosition.x);
-	ImGui::End();
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	ImGui::Begin("window");
+//	ImGui::Text("%f", playerShotAngle);
+//	ImGui::InputFloat2("return", &startPosReturn.x);
+//	ImGui::InputFloat2("startpos", &startPosition.x);
+//	ImGui::End();
+//#endif // _DEBUG
 #ifdef _DEBUG
 	/*ImGui::Begin("window");
 	ImGui::Text("%f, %f", vec.x, vec.y);
@@ -171,6 +195,8 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 	if (!isShot && !isMove && !isReturn) {
 		player_.direction = { 0,0 };
 		player_.resistance = 0;
+
+		kabe = false;
 
 		if (keys[DIK_LEFT] || keys[DIK_A]) {
 			playerShotAngle += kPlayerChangeAngle;
@@ -216,11 +242,74 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 	}
 }
 
+void PlayerClass::RefrectShooting() {
+
+	TestBlockLeftHit(player_, *map_, start1, stop1, kabe, kMoveDistance, kHitMisalignment);
+
+	TestBlockRightHit(player_, *map_, start1, stop1, kabe, kMoveDistance, kHitMisalignment);
+
+	TestBlocUnderHit(player_, *map_, start1, stop1, kabe, kMoveDistance);
+
+	if (kabe)
+	{
+
+		TestBlockLerp(player_, start1, stop1, t1);
+
+		if (t1 < 1.0f)
+		{
+			t1 += tIncrease1;
+		}
+		else {
+
+			isShot = false;
+			kabe = false;
+			t1 = 0;
+			t = 0;
+			isMove = true;
+
+			stopPosition = player_.worldPos;
+
+			playerShotAngle = 0;
+			tReturnNow = 0;
+		}
+	}
+
+}
+
+void PlayerClass::RefrectMoving()
+{
+	MoveBlocUnderHit(player_, *map_, start1, stop1, kabe, kMoveDistance, velocity);
+
+	MoveBlockLeftHit(player_, *map_, start1, stop1, kabe, kMoveDistance, velocity);
+
+	MoveBlockRightHit(player_, *map_, start1, stop1, kabe, kMoveDistance, velocity);
+	
+	if (kabe)
+	{
+
+		TestBlockLerp(player_, start1, stop1, t1);
+
+		if (t1 <= 1.0f)
+		{
+			t1 += tIncrease1;
+		}
+		else {
+			kabe = false;
+			t1 = 0;
+
+			stopPosition = player_.worldPos;
+
+			playerShotAngle = 0;
+			tReturnNow = 0;
+		}
+	}
+}
+
 void PlayerClass::Shooting()
 {
 	if (isShot) {
 		Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
-		if (playerShotDir.y - player_.resistance > 0) {
+		if (playerShotDir.y - player_.resistance > kResistPower * 2.0f || Length(startPosition - player_.worldPos) < kPlayerLimitDistance) {
 			player_.direction = Transform({ playerShotDir.x, playerShotDir.y - player_.resistance }, rotate);
 		}
 		else {
@@ -230,7 +319,10 @@ void PlayerClass::Shooting()
 			playerShotAngle = 0;
 			t = 0;
 			tReturnNow = 0;
+
+			kabe = false;
 		}
+		RefrectShooting();
 	}
 }
 
@@ -245,47 +337,73 @@ void PlayerClass::Operation(const char* keys)
 			isReturn = true;
 			playerShotAngle = 0;
 			t = 0;
+
+			kabe = false;
 		}
 
-		XINPUT_STATE joyState;
-		Vector2 move{ 0, 0 };
-		float angle = playerShotAngle;
-		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			const float threshold = 0.7f;
-			bool isMoving = false;
-			move = { float(joyState.Gamepad.sThumbLX) / SHRT_MAX, float(joyState.Gamepad.sThumbLY) / SHRT_MAX };
-			if (Length(move) > threshold) {
-				isMoving = true;
+		RefrectMoving();
+
+
+		if (!kabe) {
+			GetSpeed(player_, speed, startPosition, kMoveChangeAngle);
+			XINPUT_STATE joyState;
+			Vector2 move{ 0, 0 };
+			float angle = playerShotAngle;
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				const float threshold = 0.7f;
+				bool isMoving = false;
+				move = { float(joyState.Gamepad.sThumbLX) / SHRT_MAX, float(joyState.Gamepad.sThumbLY) / SHRT_MAX };
+				if (Length(move) > threshold) {
+					isMoving = true;
+				}
+				if (isMoving) {
+					move.x += float(joyState.Gamepad.sThumbLX) / SHRT_MAX;
+					move.y += float(joyState.Gamepad.sThumbLY) / SHRT_MAX;
+					//move = Normalize(move);
+					// Y軸周り角度(θy)
+					angle = std::atan2(-move.x, -move.y);
+				}
+				if (playerShotAngle < angle) {
+					playerShotAngle += kMoveChangeAngle;
+					LeftHitMove(player_, speed, startPosition, direction, velocity);
+				}
+				if (playerShotAngle > angle) {
+					playerShotAngle -= kMoveChangeAngle;
+					RightHitMove(player_, speed, startPosition, direction, velocity);
+				}
 			}
-			if (isMoving) {
-				move.x += float(joyState.Gamepad.sThumbLX) / SHRT_MAX;
-				move.y += float(joyState.Gamepad.sThumbLY) / SHRT_MAX;
-				//move = Normalize(move);
-				// Y軸周り角度(θy)
-				angle = std::atan2(-move.x, -move.y);
-			}
-			if (playerShotAngle < angle) {
+
+
+			if (keys[DIK_LEFT] || keys[DIK_A]) {
 				playerShotAngle += kMoveChangeAngle;
+				LeftHitMove(player_, speed, startPosition, direction, velocity);
 			}
-			if (playerShotAngle > angle) {
+			if (keys[DIK_RIGHT] || keys[DIK_D]) {
 				playerShotAngle -= kMoveChangeAngle;
+				RightHitMove(player_, speed, startPosition, direction, velocity);
 			}
+			Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
+			Vector2 vec = Transform(stopPosition - startPosition, rotate);
+
+
+			Vector2 stopPositionNow = vec + startPosition;
+			ReturnPosition(player_, startPosition, stopPositionNow, *map_, t);
 		}
-
-
-		if (keys[DIK_LEFT] || keys[DIK_A]) {
-			playerShotAngle += kMoveChangeAngle;
-		}
-		if (keys[DIK_RIGHT] || keys[DIK_D]) {
-			playerShotAngle -= kMoveChangeAngle;
-		}
-		Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
-		Vector2 vec = Transform(stopPosition - startPosition, rotate);
-
-
-		Vector2 stopPositionNow = vec + startPosition;
-		ReturnPosition(player_, startPosition, stopPositionNow, *map_, t);
 	}
+#ifdef _DEBUG
+	ImGui::Begin("window");
+	ImGui::Text("%d", isMove);
+	ImGui::Text("%f", t);
+	ImGui::InputFloat2("return", &startPosReturn.x);
+	ImGui::InputFloat2("startpos", &startPosition.x);
+	ImGui::InputFloat("speed", &speed);
+
+	ImGui::Checkbox("kabe", &kabe);
+	ImGui::Checkbox("isShot", &isShot);
+	ImGui::Text("%f", t1);
+
+	ImGui::End();
+#endif // _DEBUG
 }
 
 void PlayerClass::ScreenScroll()
