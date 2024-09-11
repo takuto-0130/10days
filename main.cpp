@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MapChipNum map{};	// マップチップのデータを保存
 
-	LoadMap(map, "./Resources/testMapLarge.csv");
+	LoadMap(map, "./Resources/testMap.csv");
 
 	MapChipNum startMap = map;	// ステージスタート時のマップを保存
 
@@ -155,6 +155,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (map.mapData[i][j] == 3)
 				{
 					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+				}
+				if (map.mapData[i][j] == 4)
+				{
+					Novice::DrawSpriteRect(int(blockSize * j) + int(scroll), blockSize * i, 0, 0, blockSize, blockSize, pinkBlock, 1.0f, 1.0f, 0.0f, 0x9999FFFF);
 				}
 				if (map.mapData[i][j] == 2)
 				{
