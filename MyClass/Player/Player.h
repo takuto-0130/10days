@@ -23,7 +23,7 @@ private:
 	Vector2 viewDir = playerShotDir;
 	float kResistPower = 0.15f; // ブロックの抵抗力
 
-	const float kMoveChangeAngle = float(M_PI) / 90;	// 体操作中の角度
+	const float kMoveChangeAngle = float(M_PI) / 150;	// 体操作中の角度
 
 	bool isShot = false;	// 体が射出されているか否か
 	bool isMove = false;	// 体操作中か否か
