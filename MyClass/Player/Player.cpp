@@ -330,7 +330,7 @@ void PlayerClass::Shooting()
 
 			kabe = false;
 		}
-		//RefrectShooting();
+		RefrectShooting();
 	}
 }
 
