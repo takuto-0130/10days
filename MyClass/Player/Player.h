@@ -62,6 +62,8 @@ private:
 
 	////////////////////////////////////////////////////////////////////
 
+	Stage* stage_ = nullptr;
+
 public:
 
 	/// <summary>
@@ -69,7 +71,7 @@ public:
 	/// </summary>
 	/// <param name="map">マップチップデータ</param>
 	/// <param name="scroll">スクロール値</param>
-	PlayerClass(MapChipNum* map, float* scroll);
+	PlayerClass(MapChipNum* map, float* scroll, Stage* stage);
 	~PlayerClass();
 
 
@@ -136,5 +138,7 @@ public:
 	/// 画面スクロール
 	/// </summary>
 	void ScreenScroll();
+
+	void SetStage(Stage* stage) { stage_ = stage; }
 };
 

@@ -346,9 +346,10 @@ void ReturnPosition(Player& player, Vector2& startPos, Vector2& stopPos, const M
 
 
 void ScrollPosition(const Vector2& kResetPos, const Vector2& returnPos, const Vector2& startPos, float* scroll, const float& t, Vector2& topPos) {
+	kResetPos;
 	topPos = Lerp(returnPos, startPos, t);
-	if (kResetPos.x < topPos.x) {
-		*scroll = kResetPos.x - topPos.x;
+	if ((19 * blockSize + blockSize / 2) < topPos.x) {
+		*scroll = (19 * blockSize + blockSize / 2) - topPos.x;
 	}
 	else {
 		*scroll = 0;

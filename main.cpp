@@ -75,9 +75,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint32_t maxBreakCount = 0;
 	MaxBreakCountSearch(maxBreakCount, startMap);
 
-	std::unique_ptr<PlayerClass> playerClass = std::make_unique<PlayerClass>(&map, &scroll);	// プレイヤー処理
 	std::unique_ptr<MapLoad> mapLoad = std::make_unique<MapLoad>(&map);
 	mapLoad->Initialize();
+
+	std::unique_ptr<PlayerClass> playerClass = std::make_unique<PlayerClass>(&map, &scroll, &mapLoad->GetNowStage());	// プレイヤー処理
 
 	std::unique_ptr<Select> stargeSelect = std::make_unique<Select>();
 	stargeSelect->Initialize();

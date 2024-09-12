@@ -4,7 +4,7 @@
 #include <cmath>
 #include "MyClass/GlobalVariables/GlobalVariables.h"
 
-PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
+PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 {
 	player_.worldPos = kResetPos;
 	player_.center = player_.worldPos;
@@ -54,6 +54,8 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	velocity = {};
 	speed = {};
 
+	SetStage(stage);
+
 	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
 	const char* groupName = "Player";
 	GlobalVariables::GetInstance()->CreateGroup(groupName);
@@ -72,6 +74,23 @@ PlayerClass::~PlayerClass()
 
 void PlayerClass::Initialize()
 {
+	switch (*stage_) {
+	case Stage::Stage1:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage2:
+		kResetPos = { 19 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage3:
+		kResetPos = { 25 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage4:
+		kResetPos = { 5 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage5:
+		kResetPos = { 30 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		break;
+	}
 	player_.worldPos = kResetPos;
 	player_.center = player_.worldPos;
 	player_.len = { blockSize,blockSize };
@@ -118,6 +137,7 @@ void PlayerClass::Initialize()
 	velocity = {};
 	speed = {};
 	ApplyGlobalVariables();
+	ScrollPosition(kResetPos, startPosReturn, startPosition, scroll_, 1, topPosition);
 }
 
 void PlayerClass::ApplyGlobalVariables() {
