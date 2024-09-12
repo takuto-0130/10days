@@ -225,12 +225,7 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 
 		kabe = false;
 
-		if (keys[DIK_LEFT] || keys[DIK_A]) {
-			playerShotAngle += kPlayerChangeAngle;
-		}
-		if (keys[DIK_RIGHT] || keys[DIK_D]) {
-			playerShotAngle -= kPlayerChangeAngle;
-		}
+		
 
 		Vector2 move{ 0, 0 };
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -248,6 +243,14 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 				playerShotAngle = std::atan2(-move.x, -move.y);
 			}
 		}
+		else {
+			if (keys[DIK_LEFT] || keys[DIK_A]) {
+				playerShotAngle += kPlayerChangeAngle;
+			}
+			if (keys[DIK_RIGHT] || keys[DIK_D]) {
+				playerShotAngle -= kPlayerChangeAngle;
+			}
+		}
 
 		Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
 		viewDir = Transform(playerShotDir, rotate);
@@ -256,13 +259,15 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 		playerShotDir = { 0,2 };
 	}
 
-	// 射出
-	if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] != 0 && !isShot && !isMove && !isReturn) {
-		isShot = true;
-		startPosReturn = player_.worldPos;
-	}
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A && !isShot && !isMove && !isReturn) {
+			isShot = true;
+			startPosReturn = player_.worldPos;
+		}
+	}
+	else {
+		// 射出
+		if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] != 0 && !isShot && !isMove && !isReturn) {
 			isShot = true;
 			startPosReturn = player_.worldPos;
 		}
@@ -400,16 +405,17 @@ void PlayerClass::Operation(const char* keys)
 					RightHitMove(player_, speed, startPosition, direction, velocity);
 				}
 			}
-
-
-			if (keys[DIK_LEFT] || keys[DIK_A]) {
-				playerShotAngle += kMoveChangeAngle;
-				LeftHitMove(player_, speed, startPosition, direction, velocity);
+			else {
+				if (keys[DIK_LEFT] || keys[DIK_A]) {
+					playerShotAngle += kMoveChangeAngle;
+					LeftHitMove(player_, speed, startPosition, direction, velocity);
+				}
+				if (keys[DIK_RIGHT] || keys[DIK_D]) {
+					playerShotAngle -= kMoveChangeAngle;
+					RightHitMove(player_, speed, startPosition, direction, velocity);
+				}
 			}
-			if (keys[DIK_RIGHT] || keys[DIK_D]) {
-				playerShotAngle -= kMoveChangeAngle;
-				RightHitMove(player_, speed, startPosition, direction, velocity);
-			}
+
 			Matrix3x3 rotate = MakeRotateMatrix(playerShotAngle);
 			Vector2 vec = Transform(stopPosition - startPosition, rotate);
 

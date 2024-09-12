@@ -9,6 +9,7 @@
 #include "MyClass/StageSelect/Select.h"
 #include "MyClass/Result/Result.h"
 #include "MyClass/ScoreLibrary//ScoreLibrary.h"
+#include <Input.h>
 
 const char kWindowTitle[] = "10daysTest";
 
@@ -98,7 +99,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Clear
 	};
 
-	Scene scene = Scene::Game;
+	Scene scene = Scene::Title;
+
+	XINPUT_STATE joyState;
+	Input::GetInstance()->GetJoystickState(0, joyState);
+	XINPUT_STATE beforeJoyState = joyState;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -123,7 +128,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (scene) {
 		case Scene::Title:
-			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+					stageSelect->Initialize();
+					stageSelect->SetHighScore();
+					scene = Scene::Select;
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
 				stageSelect->Initialize();
 				stageSelect->SetHighScore();
@@ -132,7 +145,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		case Scene::Select:
 			stageSelect->Update(keys, preKeys);
-			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+					mapLoad->Update(stageSelect->GetStageNum());
+					startMap = map;
+					scene = Scene::Game;
+					playTimer = kPlayTime;
+					breakCount = 0;
+					playerClass->Initialize();
+					MaxBreakCountSearch(maxBreakCount, startMap);
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
 				// スペース押したらSutageNum（ステージ番号）取得
 				mapLoad->Update(stageSelect->GetStageNum());
@@ -143,7 +168,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				playerClass->Initialize();
 				MaxBreakCountSearch(maxBreakCount, startMap);
 			}
-			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
+
+
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
+					scene = Scene::Title;
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
 				scene = Scene::Title;
 			}
@@ -157,7 +190,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			else {
 #pragma region // ステージ終了時
-				if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+				if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+					if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+						result->Initialize();
+						result->SetScore(breakCount);
+						result->SetStage(static_cast<int>(mapLoad->GetNowStage()) + 1);
+						historyScore->Update(breakCount);
+						float scorePercent = float(breakCount) / float(maxBreakCount);
+						if (scorePercent <= 0.5f) {
+							result->SetEvaluation(0);
+						}
+						else if (scorePercent <= 0.8f) {
+							result->SetEvaluation(1);
+						}
+						else {
+							result->SetEvaluation(2);
+						}
+						result->UIUpdate();
+						scene = Scene::Clear;
+						beforeJoyState = joyState;
+					}
+				}
+				else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 				{
 					result->Initialize();
 					result->SetScore(breakCount);
@@ -198,17 +252,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			blockParticle->Update();
 #pragma endregion
-			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
+					historyScore->Update(breakCount);
+					stageSelect->SetHighScore();
+					scene = Scene::Select;
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
-				historyScore->Update(breakCount);
-				stageSelect->SetHighScore();
 				scene = Scene::Select;
 			}
 
 			break;
 		case Scene::Clear:
 			result->Update(keys, preKeys);
-			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+					if (result->GetChaangeNext() == 1) {
+						if (mapLoad->GetNowStage() != Stage::Stage5) {
+							mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
+							startMap = map;
+							scene = Scene::Game;
+							playTimer = kPlayTime;
+							breakCount = 0;
+							playerClass->Initialize();
+							MaxBreakCountSearch(maxBreakCount, startMap);
+						}
+					}
+					else {
+						scene = Scene::Title;
+					}
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
 				if (result->GetChaangeNext() == 1) {
 					if (mapLoad->GetNowStage() != Stage::Stage5) {
@@ -225,7 +304,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					scene = Scene::Title;
 				}
 			}
-			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
+
+			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
+					stageSelect->SetHighScore();
+					scene = Scene::Select;
+					beforeJoyState = joyState;
+				}
+			}
+			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
 				stageSelect->SetHighScore();
 				scene = Scene::Select;
@@ -234,6 +321,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 
+		beforeJoyState = joyState;
 
 #ifdef _DEBUG
 
