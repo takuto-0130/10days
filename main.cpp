@@ -7,6 +7,8 @@
 #include "MyClass/GlobalVariables/GlobalVariables.h"
 #include "MyClass/MapLoad/MapLoad.h"
 #include "MyClass/StageSelect/Select.h"
+#include "MyClass/Result/Result.h"
+#include "MyClass/ScoreLibrary//ScoreLibrary.h"
 
 const char kWindowTitle[] = "10daysTest";
 
@@ -62,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockParticle.reset(new BrockEmitter());
 	blockParticle->Initialize();
 
-	uint32_t kPlayTime = 800;	// ステージの最大プレイ時間
+	uint32_t kPlayTime = 300;	// ステージの最大プレイ時間
 	uint32_t playTimer = kPlayTime;	// ステージの残りプレイ時間
 	Timedisp timeDisplay{};	// プレイ時間表示用
 
@@ -79,6 +81,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<Select> stargeSelect = std::make_unique<Select>();
 	stargeSelect->Initialize();
+
+	std::unique_ptr<Result> result = std::make_unique<Result>();
+	result->Initialize();
+
+	std::unique_ptr<ScoreLibrary> historyScore = std::make_unique<ScoreLibrary>();
+	historyScore->SetStage(&mapLoad->GetNowStage());
 
 	enum class Scene {
 		Title,
@@ -114,6 +122,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::Title:
 			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
+				stargeSelect->Initialize();
 				scene = Scene::Select;
 			}
 			break;
@@ -142,6 +151,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (playTimer > 0) {
 				playTimer--;
 			}
+			else {
+#pragma region // ステージ終了時
+				if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+				{
+					result->Initialize();
+					result->SetScore(breakCount);
+					result->SetStage(static_cast<int>(mapLoad->GetNowStage()) + 1);
+					historyScore->Update(breakCount);
+					float scorePercent = float(breakCount) / float(maxBreakCount);
+					if (scorePercent <= 0.5f) {
+						result->SetEvaluation(0);
+					}
+					else if (scorePercent <= 0.8f) {
+						result->SetEvaluation(1);
+					}
+					else {
+						result->SetEvaluation(2);
+					}
+					result->UIUpdate();
+					scene = Scene::Clear;
+				}
+#pragma endregion
+			}
 			TimeDisplay(playTimer, timeDisplay);
 
 
@@ -169,6 +201,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case Scene::Clear:
+			result->Update(keys, preKeys);
+			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+			{
+				if (result->GetChaangeNext() == 1) {
+					if (mapLoad->GetNowStage() != Stage::Stage5) {
+						mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
+						startMap = map;
+						scene = Scene::Game;
+						playTimer = kPlayTime;
+						breakCount = 0;
+						playerClass->Initialize();
+						MaxBreakCountSearch(maxBreakCount, startMap);
+					}
+				}
+				else {
+					scene = Scene::Title;
+				}
+			}
+			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
+			{
+				scene = Scene::Select;
+			}
 			break;
 		}
 
@@ -270,6 +324,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion
 			break;
 		case Scene::Clear:
+			result->Draw();
 			break;
 		}
 

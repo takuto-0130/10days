@@ -126,6 +126,8 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="MyClass\GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="MyClass\MapLoad\MapLoad.cpp" />
     <ClCompile Include="MyClass\Player\Player.cpp" />
+    <ClCompile Include="MyClass\Result\Result.cpp" />
+    <ClCompile Include="MyClass\ScoreLibrary\ScoreLibrary.cpp" />
     <ClCompile Include="MyClass\StageSelect\Select.cpp" />
     <ClCompile Include="PositionSwap.cpp" />
   </ItemGroup>
@@ -165,6 +167,8 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MyClass\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="MyClass\MapLoad\MapLoad.h" />
     <ClInclude Include="MyClass\Player\Player.h" />
+    <ClInclude Include="MyClass\Result\Result.h" />
+    <ClInclude Include="MyClass\ScoreLibrary\ScoreLibrary.h" />
     <ClInclude Include="MyClass\StageSelect\Select.h" />
     <ClInclude Include="PositionSwap.h" />
     <ClInclude Include="Struct.h" />

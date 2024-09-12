@@ -26,5 +26,7 @@ public:
 	void SetMap(MapChipNum* map) { map_ = map; }
 
 	void StageNumber(int stageNum);
+
+	Stage& GetNowStage() { return stage_; }
 };
 
