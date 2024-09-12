@@ -1,11 +1,12 @@
-﻿#include "Select.h"
+#include "Select.h"
+#include "MyClass/GlobalVariables/GlobalVariables.h"
 
 Select::~Select(){}
 
 void Select::Initialize()
 {
 	bgTexture_ = Novice::LoadTexture("./Resources/white1x1.png"); // 0x191970ff
-	starTexture_ = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png"); // 0xffd700ff
+	starTexture_ = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png");
 
 	stageTexture_[0] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
 	stageTexture_[1] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
@@ -13,10 +14,12 @@ void Select::Initialize()
 	stageTexture_[3] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
 	stageTexture_[4] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
 
-	arrowTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/arrow.png"); // 0xb0c4deff
-	arrowTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/arrow.png"); // 0xb0c4deff
-	buttonTexture_ = Novice::LoadTexture("./Resources/StageSelect/A.png"); // 0xffd700ff
+	arrowTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
+	arrowTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
+	buttonTexture_ = Novice::LoadTexture("./Resources/StageSelect/A.png"); 
 	uiTexture_= Novice::LoadTexture("./Resources/StageSelect/titleText.png");
+	humanTexture_ = Novice::LoadTexture("./Resources/StageSelect/player.png");
+	numberTexture_ = Novice::LoadTexture("./Resources/number/namber_yellow.png");
 
 	bg_.center = { 640.0f,360.0f };
 	bg_.rad = { 1280.0f,720.0f };
@@ -35,7 +38,6 @@ void Select::Initialize()
 	stage_[1].center = { 640.0f,750.0f };
 	stage_[1].rad = { 588.0f,216.0f };
 	QuadVer(stage_[1].center, stage_[1].rad.x, stage_[1].rad.y, stage_[1].LT, stage_[1].RT, stage_[1].LB, stage_[1].RB);
-
 
 
 	arrow_[0].center = {640.0f,620.0f};
@@ -62,6 +64,7 @@ void Select::Initialize()
 	stageChangeInterval_ = kStageChangeTime;
 	stageChangeTime_ = 0;
 	arrowTime_ = 0;
+	humanPopTime_ = kHumanPopTime_;
 
 	isStarDraw_ = true;
 
@@ -83,20 +86,21 @@ void Select::Initialize()
 
 	isPoyon_ = false;
 	isPoyonChange_ = false;
+	isPopHuman_ = false;
+
+	scorePos_ = { 350,100 };
 }
 
 void Select::Update(const char* keys, const char* preKeys)
 {
-	preKeys;
-	if (keys[(DIK_W)])
+	if (keys[DIK_W] && !preKeys[DIK_W])
 	{
 		MinasStageNum();
 	}
-	if (keys[(DIK_S)])
+	if (keys[DIK_S] && !preKeys[DIK_S])
 	{
 		PlusStageNum();
 	}
-
 	if (stageChangeInterval_ > 0)
 	{
 		stageChangeInterval_ -= kTimeCount;
@@ -118,6 +122,16 @@ void Select::Update(const char* keys, const char* preKeys)
 	}
 
 	StarUpdate();
+
+	arrowTime_ += arrowTimeCo;
+	if (arrowTime_ > 1)
+	{
+		arrowTimeCo *= -1;
+	}
+	else if(arrowTime_ < 0)
+	{
+		arrowTimeCo *= -1;
+	}
 	
 
 	ArrowUpdate();
@@ -153,7 +167,23 @@ void Select::Update(const char* keys, const char* preKeys)
 	}
 
 	
+	if (!isPopHuman_)
+	{
+		humanPopTime_ -= kTimeCount;
+		if (humanPopTime_ <= 0)
+		{
+			PopHuman();
+			isPopHuman_ = true;
+			humanPopTime_ = kHumanPopTime_;
+		}
+	}
 
+	if (isPopHuman_)
+	{
+		HumanUpdate();
+	}
+
+	HighScoreUpdate();
 }
 
 void Select::Draw()
@@ -175,6 +205,22 @@ void Select::Draw()
 			starTexture_, 0xffd700ff);
 	}
 
+	if (isPopHuman_)
+	{
+		/*Novice::DrawQuad(int(rotateLeftTop.x), int(rotateLeftTop.y),
+			int(rotateRightTop.x), int(rotateRightTop.y),
+			int(rotateLeftBottom.x), int(rotateLeftBottom.y),
+			int(rotateRightBottom.x), int(rotateRightBottom.y),
+			0, 0, int(human_.rad.x), int(human_.rad.y),
+			humanTexture_, WHITE);*/
+
+		Novice::DrawQuad(int(human_.LT.x), int(human_.LT.y),
+			int(human_.RT.x), int(human_.RT.y),
+			int(human_.LB.x), int(human_.LB.y),
+			int(human_.RB.x), int(human_.RB.y),
+			0, 0, int(human_.rad.x), int(human_.rad.y),
+			humanTexture_, WHITE);
+	}
 
 	Novice::DrawQuad((int)stage_[0].LT.x, (int)stage_[0].LT.y,
 		(int)stage_[0].RT.x, (int)stage_[0].RT.y,
@@ -232,6 +278,22 @@ void Select::Draw()
 			arrowTexture_[1], WHITE);
 	}
 
+	for (int j = 0; j < 5; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (j == stageNum_ or j==stageNum_ - 1)
+			{
+				Novice::DrawQuad((int)number_[i][j].LT.x, (int)number_[i][j].LT.y,
+					(int)number_[i][j].RT.x, (int)number_[i][j].RT.y,
+					(int)number_[i][j].LB.x, (int)number_[i][j].LB.y,
+					(int)number_[i][j].RB.x, (int)number_[i][j].RB.y,
+					numberSize_ * num_[i][j], 0, numberSize_, numberSize_,
+					numberTexture_, WHITE);
+			}
+		}
+	}
+
 	Novice::DrawQuad((int)button_.LT.x, (int)button_.LT.y,
 		(int)button_.RT.x, (int)button_.RT.y,
 		(int)button_.LB.x, (int)button_.LB.y,
@@ -245,6 +307,18 @@ void Select::Draw()
 		(int)ui_.RB.x, (int)ui_.RB.y,
 		0, 0, (int)ui_.rad.x, (int)ui_.rad.y,
 		uiTexture_, WHITE);
+
+}
+
+void Select::SetHighScore()
+{
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "HistoryScore";
+	highScore_[0] = globalVariables->GetIntValue(groupName, "Stage1");
+	highScore_[1] = globalVariables->GetIntValue(groupName, "Stage2");
+	highScore_[2] = globalVariables->GetIntValue(groupName, "Stage3");
+	highScore_[3] = globalVariables->GetIntValue(groupName, "Stage4");
+	highScore_[4] = globalVariables->GetIntValue(groupName, "Stage5");
 }
 
 void Select::PlusStageNum()
@@ -254,6 +328,10 @@ void Select::PlusStageNum()
 		stageNum_ += 1;
 		stageChangeInterval_ = kStageChangeTime;
 		changeStage = 1;
+		/*if (stageNum_ == kStageNum + 1)
+		{
+			stageNum_ = 1;
+		}*/
 	}
 }
 
@@ -314,16 +392,6 @@ void Select::StarUpdate()
 
 void Select::ArrowUpdate()
 {
-	arrowTime_ += arrowTimeCo;
-	if (arrowTime_ > 1)
-	{
-		arrowTimeCo *= -1;
-	}
-	else if (arrowTime_ < 0)
-	{
-		arrowTimeCo *= -1;
-	}
-
 	arrow_[0].center = Lerp(arrowStartPos_[0], arrowStopPos_[0], arrowTime_);
 	arrow_[1].center = Lerp(arrowStartPos_[1], arrowStopPos_[1], arrowTime_);
 }
@@ -356,6 +424,98 @@ void Select::ButtonUpdate()
 	}
 
 	QuadVer(button_.center, button_.rad.x, button_.rad.y, button_.LT, button_.RT, button_.LB, button_.RB);
+}
+
+void Select::HighScoreUpdate()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		num_[0][i] = highScore_[i] % 10;
+		highScore2_[i] = (highScore_[i] - num_[0][i]) / 10;
+		num_[1][i] = highScore2_[i] % 10;
+		highScore3_[i] = (highScore2_[i] - num_[1][i]) / 10;
+		num_[2][i] = highScore3_[i] % 10;
+		highScore4_[i] = (highScore3_[i] - num_[2][i]) / 10;
+		num_[3][i] = highScore4_[i] % 10;
+
+
+		number_[0][i].center = {stage_[i].center.x + scorePos_.x,stage_[i].center.y + scorePos_.y};
+		number_[0][i].rad = {64,64};
+
+		number_[1][i].center = {number_[0][i].center.x - 70 ,number_[0][i].center.y};
+		number_[1][i].rad = number_[0][i].rad;
+
+		number_[2][i].center = {number_[1][i].center.x - 70 ,number_[0][i].center.y};
+		number_[2][i].rad = number_[0][i].rad;
+
+		number_[3][i].center = {number_[2][i].center.x - 70 ,number_[0][i].center.y};
+		number_[3][i].rad = number_[0][i].rad;
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			QuadVer(number_[j][i].center, number_[j][i].rad.x, number_[j][i].rad.y, number_[j][i].LT, number_[j][i].RT, number_[j][i].LB, number_[j][i].RB);
+		}
+	}
+	
+}
+
+void Select::PopHuman()
+{
+	human_.center.x = float(rand() % 360 + 1550);
+	human_.center.y = float(rand() % 500 + 200);
+
+	//human_.center = { 500,500 };
+
+	human_.rad = { 360,210 };
+
+	humanRotate_ = human_;
+
+	QuadVer(human_.center, human_.rad.x, human_.rad.y, human_.LT, human_.RT, human_.LB, human_.RB);
+
+	//QuadVer(human_.center, human_.rad.x, human_.rad.y, humanRotate_.LT, humanRotate_.RT, humanRotate_.LB, humanRotate_.RB);
+}
+
+void Select::HumanUpdate()
+{
+
+	/*theta_ += 0.03f;
+
+	Matrix2x2 rotataematrix = MakeRotateMatrix(theta_);
+
+	rotateLeftTop = Multiply(humanRotate_.LT, rotataematrix);
+	rotateLeftTop.x += human_.center.x;
+	rotateLeftTop.y += human_.center.y;
+
+	rotateRightTop = Multiply(humanRotate_.RT, rotataematrix);
+	rotateRightTop.x += human_.center.x;
+	rotateRightTop.y += human_.center.y;
+
+	rotateLeftBottom = Multiply(humanRotate_.LB, rotataematrix);
+	rotateLeftBottom.x += human_.center.x;
+	rotateLeftBottom.y += human_.center.y;
+
+	rotateRightBottom = Multiply(humanRotate_.RB, rotataematrix);
+	rotateRightBottom.x += human_.center.x;
+	rotateRightBottom.y += human_.center.y;*/
+
+	human_.center.x -= 2.0f;
+
+	QuadVer(human_.center, human_.rad.x, human_.rad.y, human_.LT, human_.RT, human_.LB, human_.RB);
+
+	/*if (rotateLeftTop.x <= -400)
+	{
+		isPopHuman_ = false;
+		theta_ = 0;
+	}*/
+
+	if (human_.center.x <= -400)
+	{
+		isPopHuman_ = false;
+		theta_ = 0;
+	}
 }
 
 Vector2 Select::Lerp(const Vector2& v1, const Vector2& v2, float t)

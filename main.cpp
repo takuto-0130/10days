@@ -80,14 +80,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<PlayerClass> playerClass = std::make_unique<PlayerClass>(&map, &scroll, &mapLoad->GetNowStage());	// プレイヤー処理
 
-	std::unique_ptr<Select> stargeSelect = std::make_unique<Select>();
-	stargeSelect->Initialize();
+	std::unique_ptr<Select> stageSelect = std::make_unique<Select>();
+	stageSelect->Initialize();
 
 	std::unique_ptr<Result> result = std::make_unique<Result>();
 	result->Initialize();
 
 	std::unique_ptr<ScoreLibrary> historyScore = std::make_unique<ScoreLibrary>();
 	historyScore->SetStage(&mapLoad->GetNowStage());
+
+	stageSelect->SetHighScore();
 
 	enum class Scene {
 		Title,
@@ -123,16 +125,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::Title:
 			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
-				stargeSelect->Initialize();
+				stageSelect->Initialize();
+				stageSelect->SetHighScore();
 				scene = Scene::Select;
 			}
 			break;
 		case Scene::Select:
-			stargeSelect->Update(keys, preKeys);
+			stageSelect->Update(keys, preKeys);
 			if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
 				// スペース押したらSutageNum（ステージ番号）取得
-				mapLoad->Update(stargeSelect->GetStageNum());
+				mapLoad->Update(stageSelect->GetStageNum());
 				startMap = map;
 				scene = Scene::Game;
 				playTimer = kPlayTime;
@@ -197,6 +200,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion
 			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
+				historyScore->Update(breakCount);
+				stageSelect->SetHighScore();
 				scene = Scene::Select;
 			}
 
@@ -222,6 +227,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
+				stageSelect->SetHighScore();
 				scene = Scene::Select;
 			}
 			break;
@@ -257,7 +263,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::Title:
 			break;
 		case Scene::Select:
-			stargeSelect->Draw();
+			stageSelect->Draw();
 			break;
 		case Scene::Game:
 #pragma region // ゲームシーン描画
