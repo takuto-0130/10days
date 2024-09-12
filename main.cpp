@@ -21,7 +21,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//float gravity = 0.02f;
 
-	bool isParticle = 0;
 
 	int mapTex = Novice::LoadTexture("./Resources/mapBlock.png");
 	int pinkBlock = Novice::LoadTexture("./Resources/Block.png");
@@ -68,6 +67,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<PlayerClass> playerClass = std::make_unique<PlayerClass>(&map, &scroll);	// プレイヤー処理
 
+	enum Scene {
+		Title,
+		Select,
+		Game,
+		Clear
+	};
+
+	enum Stage {
+		Stage1,
+		Stage2,
+		Stage3,
+		Stage4,
+		Stage5
+	};
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -89,8 +103,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 #endif // _DEBUG
 
-		isParticle = 0;
-		isClear = 0;
 
 		// HitStop
 		if (playTimer > 0) {
