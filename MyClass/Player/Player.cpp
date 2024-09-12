@@ -76,13 +76,13 @@ void PlayerClass::Initialize()
 {
 	switch (*stage_) {
 	case Stage::Stage1:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 12 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage2:
 		kResetPos = { 19 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage3:
-		kResetPos = { 25 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		kResetPos = { 25 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage4:
 		kResetPos = { 5 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };

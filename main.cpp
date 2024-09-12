@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	MapChipNum map{};	// マップチップのデータを保存
-	LoadMap(map, "./Resources/testMap.csv");
+	LoadMap(map, "./Resources/sample2.csv");
 	MapChipNum startMap = map;	// ステージスタート時のマップを保存
 
 
@@ -64,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockParticle.reset(new BrockEmitter());
 	blockParticle->Initialize();
 
-	uint32_t kPlayTime = 300;	// ステージの最大プレイ時間
+	uint32_t kPlayTime = 300;	// ステージの最大プレイ時間（5999）
 	uint32_t playTimer = kPlayTime;	// ステージの残りプレイ時間
 	Timedisp timeDisplay{};	// プレイ時間表示用
 
@@ -152,7 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma region // ゲームシーンアップデート
 			// HitStop
-			if (playTimer > 0) {
+			if (playTimer > 0 && maxBreakCount > breakCount) {
 				playTimer--;
 			}
 			else {
@@ -181,7 +181,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			TimeDisplay(playTimer, timeDisplay);
 
 
-			if (playTimer > 0)
+			if (playTimer > 0 && maxBreakCount > breakCount)
 			{
 				if (hitStopTimer <= 0) {
 					//					
