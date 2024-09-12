@@ -8,7 +8,6 @@
 #include "MyClass/MapLoad/MapLoad.h"
 #include "MyClass/StageSelect/Select.h"
 
-
 const char kWindowTitle[] = "10daysTest";
 
 // キー入力結果を受け取る箱
@@ -23,27 +22,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//float gravity = 0.02f;
 
-
+#pragma region // 画像読み込み
 	int mapTex = Novice::LoadTexture("./Resources/mapBlock.png");
-	int pinkBlock = Novice::LoadTexture("./Resources/Block.png");
+	int pinkBlock = Novice::LoadTexture("./Resources/stage/Block.png");
 	int bgTex = Novice::LoadTexture("./Resources/bg.png");
 	int block = Novice::LoadTexture("white1x1.png");
 	//int titleTex = Novice::LoadTexture("./Resources/title.png");
 
 #ifndef _DEBUG
 	int numberTex = Novice::LoadTexture("./Resources/numberTex.png");
-	int timeFrame = Novice::LoadTexture("./Resources/timeFrame.png");
-	int scoreFrame = Novice::LoadTexture("./Resources/scoreFrame.png");
+	int blueNumberTex = Novice::LoadTexture("./Resources/number/namber_green.png");
+	int timeFrame = Novice::LoadTexture("./Resources/stage/time_frame.png");
+	int scoreFukidasi = Novice::LoadTexture("./Resources/stage/score_fukidasi.png");
 #endif // !_DEBUG
+	int scoreFrame = Novice::LoadTexture("./Resources/stage/score_frame.png");
+	int scoreGauge = Novice::LoadTexture("./Resources/stage/score.png");
+
+#pragma endregion
 
 	// グローバル変数の読み込み
 	GlobalVariables::GetInstance()->LoadFiles();
 
 
 	MapChipNum map{};	// マップチップのデータを保存
-
 	LoadMap(map, "./Resources/testMap.csv");
-
 	MapChipNum startMap = map;	// ステージスタート時のマップを保存
 
 
@@ -60,12 +62,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockParticle.reset(new BrockEmitter());
 	blockParticle->Initialize();
 
-	uint32_t kPlayTime = 5999;	// ステージの最大プレイ時間
+	uint32_t kPlayTime = 800;	// ステージの最大プレイ時間
 	uint32_t playTimer = kPlayTime;	// ステージの残りプレイ時間
 	Timedisp timeDisplay{};	// プレイ時間表示用
 
 	uint32_t breakCount = 0;	// 壊したブロックの数
 	ScoreDisp score{};	// 壊したブロックの数表示用
+	ScoreDisp beforeScore{};
+	beforeScore = score;
+	uint32_t maxBreakCount = 0;
+	MaxBreakCountSearch(maxBreakCount, startMap);
 
 	std::unique_ptr<PlayerClass> playerClass = std::make_unique<PlayerClass>(&map, &scroll);	// プレイヤー処理
 	std::unique_ptr<MapLoad> mapLoad = std::make_unique<MapLoad>(&map);
@@ -81,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Clear
 	};
 
-	Scene scene = Scene::Title;
+	Scene scene = Scene::Game;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -117,11 +123,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				// スペース押したらSutageNum（ステージ番号）取得
 				mapLoad->Update(stargeSelect->GetStageNum());
+				startMap = map;
 				scene = Scene::Game;
 				playTimer = kPlayTime;
 				breakCount = 0;
 				playerClass->Initialize();
-				breakCount = 0;
+				MaxBreakCountSearch(maxBreakCount, startMap);
 			}
 			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
@@ -152,10 +159,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (hitStopTimer >= 0) {
 					hitStopTimer--;
 				}
-				blockParticle->Update();
-
-
 			}
+			blockParticle->Update();
 #pragma endregion
 			if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
@@ -231,19 +236,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			blockParticle->Draw(scroll);
 
 			playerClass->Draw();
-
+			DrawScoreGauge(breakCount, maxBreakCount, scoreFrame, scoreGauge);
 #ifndef _DEBUG
-			Novice::DrawSprite(0, 0, timeFrame, 1.0f, 1.0f, 0.0f, WHITE);
-			for (int i = 0; i < 2; i++)
-			{
-				Novice::DrawSpriteRect(/*118*/3 + 43 * i, 5, 64 * timeDisplay.seconds[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+			Novice::DrawSprite(0, 0, timeFrame, 0.7f,0.7f, 0.0f, WHITE);
+			if (playTimer > 599) {
+				for (int i = 0; i < 2; i++)
+				{
+					Novice::DrawSpriteRect(13 + 43 * i, 18, 64 * timeDisplay.seconds[i], 0, 64, 64, blueNumberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+				}
 			}
-			Novice::DrawSprite(524, 640, scoreFrame, 1.0f, 1.0f, 0.0f, WHITE);;
-			for (int i = 0; i < 3; i++)
+			else if(playTimer > 359)
 			{
-				Novice::DrawSpriteRect(555 + 40 * i, 643, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+				Novice::DrawSpriteRect(33, 18, 64 * timeDisplay.seconds[1], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+			}
+			else
+			{
+				float a = float(playTimer % 60);
+				Novice::DrawSpriteRect(int(33.0f - (12.0f * (a / 60.0f))), int(18.0f - (12.0f * (a / 60.0f))), 64 * timeDisplay.seconds[1], 0, 64, 64, numberTex, (1.0f + (a / 120.0f)) / 12.0f, (1.0f + (a / 120.0f)) / 1.2f, 0.0f, 0xFFFFFFFF);
+			}
+			Novice::DrawSprite(490, 620, scoreFukidasi, 1.0f, 0.8f, 0.0f, WHITE);;
+			for (int i = 0; i < 4; i++)
+			{
+				if(score.num[i] == beforeScore.num[i])
+				{
+					Novice::DrawSpriteRect(548 + 43 * i, 632, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+				}
+				else {
+					Novice::DrawSpriteRect(548 + 43 * i, 622, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
+				}
 			}
 #endif // !_DEBUG
+			beforeScore = score;
 #pragma endregion
 			break;
 		case Scene::Clear:

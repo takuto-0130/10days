@@ -294,13 +294,16 @@ void TimeDisplay(const uint32_t time, Timedisp& a) {
 void ScoreDisplay(const uint32_t score, ScoreDisp& a) {
 
 	uint32_t byou = score;
-	a.num[0] = byou / 100;
+	a.num[0] = byou / 1000;
+	byou = byou % 1000;
+
+	a.num[1] = byou / 100;
 	byou = byou % 100;
 
-	a.num[1] = byou / 10;
+	a.num[2] = byou / 10;
 	byou = byou % 10;
 
-	a.num[2] = byou;
+	a.num[3] = byou;
 }
 
 
@@ -448,11 +451,6 @@ void RightHitMove(Player& player, float& speed, Vector2& startPosition, Vector2&
 
 
 void MoveBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
-	/*if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 1 &&
-		map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 1)
-	{
-		player.worldPos.x = float(int(player.rt.x) / blockSize) * blockSize + (player.len.x + player.sizeChange.x) / 2;
-	}*/
 	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4)
 	{
@@ -470,11 +468,6 @@ void MoveBlockLeftHit(Player& player, const MapChipNum map, Vector2& start, Vect
 }
 
 void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
-	/*if (map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 1 &&
-		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 1)
-	{
-		player.worldPos.x = float(int(player.lt.x) / blockSize) * blockSize - (player.len.x + player.sizeChange.x) / 2;
-	}*/
 	if (map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
 	{
@@ -492,11 +485,6 @@ void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vec
 }
 
 void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
-	/*if (map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 1 &&
-		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 1)
-	{
-		player.worldPos.y = float(int(player.lb.y) / blockSize) * blockSize - (player.len.y + player.sizeChange.y) / 2;
-	}*/
 	if (map.mapData[int(player.lb.y + v.y) / blockSize][int(player.lb.x + v.x) / blockSize] == 4 &&
 		map.mapData[int(player.rb.y + v.y) / blockSize][int(player.rb.x + v.x) / blockSize] == 4)
 	{
@@ -512,26 +500,26 @@ void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vect
 	}
 }
 
-//void MoveBlocUpHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v) {
-//	/*if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 1 &&
-//		map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 1)
-//	{
-//		player.worldPos.y = float(int(player.lb.y) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2;
-//	}*/
-//
-//	if (map.mapData[int(player.lt.y + v.y) / blockSize][int(player.lt.x + v.x) / blockSize] == 4 &&
-//		map.mapData[int(player.rt.y + v.y) / blockSize][int(player.rt.x + v.x) / blockSize] == 4)
-//	{
-//		player.worldPos.y = float(int(player.lb.y + (player.moveSpeed.y * player.direction.y)) / blockSize) * blockSize + (player.len.y + player.sizeChange.y) / 2;
-//
-//		if (!kabe)
-//		{
-//			start = player.worldPos;
-//			stop = { start.x,start.y + distance };
-//		}
-//
-//		kabe = true;
-//	}
-//}
-
 #pragma endregion
+
+
+
+void DrawScoreGauge(const int& score, const int& maxScore, const int& frameTexHandle, const int& scoreTexHandle) {
+	float scale = 0;
+	if (score > 0) {
+		scale = float(score) / float(maxScore);
+	}
+	Novice::DrawSpriteRect(90, 615, 0, 0, int(1100.0f * scale), 150, scoreTexHandle, scale, 0.7f, 0.0f, WHITE);
+	Novice::DrawSpriteRect(90, 615, 0, 0, 1100, 150, frameTexHandle, 1.0f, 0.7f, 0.0f, WHITE);
+}
+
+void MaxBreakCountSearch(uint32_t& maxBreakCount, const MapChipNum& startMap) {
+	maxBreakCount = 0;
+	for (int16_t i = 0; i < mapChipHeight; i++) {
+		for (int16_t j = 0; j < mapChipWidth; j++) {
+			if (startMap.mapData[i][j] == 3) {
+				maxBreakCount++;
+			}
+		}
+	}
+}

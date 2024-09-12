@@ -42,8 +42,8 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll)
 	tReturn = 0.02f;
 	SetMap(map);
 	SetScroll(scroll);
-	playerTex = Novice::LoadTexture("./Resources/leg.png");
-	playerTex2 = Novice::LoadTexture("./Resources/body.png");
+	playerTex = Novice::LoadTexture("./Resources/stage/leg.png");
+	playerTex2 = Novice::LoadTexture("./Resources/stage/body.png");
 
 	start1 = {};
 	stop1 = {};
@@ -175,11 +175,11 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 
 void PlayerClass::Draw()
 {
-	if (!isShot && !isMove) {
+	if (!isShot && !isMove && !isReturn) {
 		Novice::DrawLine(int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y), int(player_.worldPos.x + (viewDir.x * 40.0f)) + int(*scroll_), int(player_.worldPos.y + (viewDir.y * 40.0f)), 0xFFFFFFFF);
 	}
-	if (isMove) {
-		Novice::DrawLine(int(startPosition.x) + int(*scroll_), int(startPosition.y), int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y), 0xFFFFFFFF);
+	if (isMove || isShot) {
+		Novice::DrawLine(int(startPosition.x) + int(*scroll_), int(startPosition.y - 16.0f), int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y - 16.0f), 0xFFFFFFFF);
 	}
 	Novice::DrawQuad(
 		int(topPosition.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y - (player_.len.y + player_.sizeChange.y) / 2 - blockSize),

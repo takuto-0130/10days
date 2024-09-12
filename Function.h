@@ -95,3 +95,7 @@ void MoveBlockRightHit(Player& player, const MapChipNum map, Vector2& start, Vec
 void MoveBlocUnderHit(Player& player, const MapChipNum map, Vector2& start, Vector2& stop, bool& kabe, float distance, Vector2& v);
 
 #pragma endregion
+
+void DrawScoreGauge(const int& score, const int& maxScore, const int& frameTexHandle, const int& scoreTexHandle);
+
+void MaxBreakCountSearch(uint32_t& maxBreakCount, const MapChipNum& startMap);

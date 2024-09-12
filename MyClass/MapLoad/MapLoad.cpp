@@ -11,7 +11,7 @@ MapLoad::~MapLoad()
 
 void MapLoad::Initialize()
 {
-	LoadMap(*map_, "./Resources/testMap.csv");
+	LoadMap(*map_, "./Resources/sample.csv");
 }
 
 void MapLoad::Update(int stageNum)
@@ -19,7 +19,7 @@ void MapLoad::Update(int stageNum)
 	StageNumber(stageNum);
 	switch (stage_) {
 	case Stage::Stage1:
-		LoadMap(*map_, "./Resources/testMap.csv");
+		LoadMap(*map_, "./Resources/sample.csv");
 		break;
 	case Stage::Stage2:
 		LoadMap(*map_, "./Resources/testMapLarge.csv");

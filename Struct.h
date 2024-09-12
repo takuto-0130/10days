@@ -132,7 +132,7 @@ struct Timedisp {
 };
 
 struct ScoreDisp {
-	uint32_t num[3];
+	uint32_t num[4];
 };
 
 enum class Stage {
