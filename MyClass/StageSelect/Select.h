@@ -64,7 +64,7 @@ public:
 private:
 
 	int bgTexture_ = 0;
-	int starTexture_ = 0;
+	int starTexture_[3];
 	int stageTexture_[kStageNum];
 	int arrowTexture_[2];
 	int buttonTexture_ = 0;
@@ -75,7 +75,7 @@ private:
 	int scoreFontTexter_ = 0;
 
 	Quad bg_{};
-	Quad star_{};
+	Quad star_[6];
 	Quad stage_[kStageNum];
 	Quad number_[4][5];
 	Quad arrow_[2];
@@ -98,7 +98,7 @@ private:
 
 	int buttonTime_ = 0;
 	float poyonTime_ = 0;
-	int starTime_ = 0;
+	int starTime_[6];
 	int stageChangeInterval_ = 0;
 	float stageChangeTime_ = 0;
 	float arrowTimeCo = 0.02f;
@@ -106,10 +106,13 @@ private:
 	int humanPopTime_ = 0;
 	float theta_ = 0;
 
-	bool isStarDraw_ = true;
+	int isStarDraw_[6];
 
 	int num_[4][5];
 	int numberSize_ = 64;
+
+	int starSize_ = 64;
+	Vector2 stageNumSize_ = { 500,200 };
 
 	int stageNum_ = 1;
 	int changeStage = 0;

@@ -6,7 +6,9 @@ Select::~Select(){}
 void Select::Initialize()
 {
 	bgTexture_ = Novice::LoadTexture("./Resources/backGround.png");
-	starTexture_ = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png");
+	starTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png");
+	starTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/flowerBlue.png");
+	starTexture_[2] = Novice::LoadTexture("./Resources/StageSelect/flowerRed.png");
 
 	stageTexture_[0] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
 	stageTexture_[1] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
@@ -26,7 +28,14 @@ void Select::Initialize()
 	stageNumTexter_[2] = Novice::LoadTexture("./Resources/StageSelect/stage3.png");
 	stageNumTexter_[3] = Novice::LoadTexture("./Resources/StageSelect/stage4.png");
 	stageNumTexter_[4] = Novice::LoadTexture("./Resources/StageSelect/stage5.png");
-
+	stageNumTexter_[5] = Novice::LoadTexture("./Resources/StageSelect/stage6.png");
+	stageNumTexter_[6] = Novice::LoadTexture("./Resources/StageSelect/stage7.png");
+	stageNumTexter_[7] = Novice::LoadTexture("./Resources/StageSelect/stage8.png");
+	stageNumTexter_[8] = Novice::LoadTexture("./Resources/StageSelect/stage9.png");
+	stageNumTexter_[9] = Novice::LoadTexture("./Resources/StageSelect/stage10.png");
+	stageNumTexter_[10] = Novice::LoadTexture("./Resources/StageSelect/stage11.png");
+	stageNumTexter_[11] = Novice::LoadTexture("./Resources/StageSelect/stage12.png");
+	
 	scoreFontTexter_ = Novice::LoadTexture("./Resources/StageSelect/stageScore.png");
 
 	bg_.center = { 640.0f,360.0f };
@@ -34,10 +43,18 @@ void Select::Initialize()
 	QuadVer(bg_.center, bg_.rad.x, bg_.rad.y, bg_.LT, bg_.RT, bg_.LB, bg_.RB);
 	
 
-	star_.center = { 50.0f,50.0f };
-	star_.rad = { 64.0f,64.0f };
-	QuadVer(star_.center, star_.rad.x, star_.rad.y, star_.LT, star_.RT, star_.LB, star_.RB);
-	
+	star_[0].center = {100.0f,50.0f};
+	star_[1].center = { 50.0f,50.0f };
+	star_[2].center = { 50.0f,50.0f };
+	star_[3].center = { 50.0f,50.0f };
+	star_[4].center = { 50.0f,50.0f };
+	star_[5].center = { 50.0f,50.0f };
+	for (int i = 0; i < 6; i++)
+	{
+		star_[i].rad = { 32.0f,32.0f };
+		QuadVer(star_[i].center, star_[i].rad.x, star_[i].rad.y, star_[i].LT, star_[i].RT, star_[i].LB, star_[i].RB);
+		isStarDraw_[i] = 1;
+	}
 
 	stage_[0].center = { 640.0f,360.0f };
 	stage_[0].rad = { 980.0f,420.0f };
@@ -66,28 +83,31 @@ void Select::Initialize()
 	ui_.rad = { 350.0f,70.0f };
 	QuadVer(ui_.center, ui_.rad.x, ui_.rad.y, ui_.LT, ui_.RT, ui_.LB, ui_.RB);
 
-
-	stageNumber_.center = {380 ,220 };
-	stageNumber_.rad = { 400,160 };
-	QuadVer(stageNumber_.center, stageNumber_.rad.x, stageNumber_.rad.y, stageNumber_.LT, stageNumber_.RT, stageNumber_.LB, stageNumber_.RB);
-
 	scoreFont_.center = { 840 ,380 };
 	scoreFont_.rad = { 240,60 };
 	QuadVer(scoreFont_.center, scoreFont_.rad.x, scoreFont_.rad.y, scoreFont_.LT, scoreFont_.RT, scoreFont_.LB, scoreFont_.RB);
 
+	stageNumber_.center = { 380 ,220 };
+	stageNumber_.rad = { 400,160 };
+	QuadVer(stageNumber_.center, stageNumber_.rad.x, stageNumber_.rad.y, stageNumber_.LT, stageNumber_.RT, stageNumber_.LB, stageNumber_.RB);
+
+
+	stageNum_ = 1;
 
 	stageNumDraw_ = stageNumTexter_[stageNum_ - 1];
 
 	buttonTime_ = kButtonTime;
-	starTime_ = kStarTime;
+	starTime_[0] = kStarTime;
+	starTime_[1] = 110;
+	starTime_[2] = 90;
+	starTime_[3] = 70;
+	starTime_[4] = 40;
+	starTime_[5] = 10;
 	stageChangeInterval_ = kStageChangeTime;
 	stageChangeTime_ = 0;
 	arrowTime_ = 0;
 	humanPopTime_ = kHumanPopTime_;
 
-	isStarDraw_ = true;
-
-	stageNum_ = 1;
 
 	topPos_ = { 640.0f,-360.0f };
 	nowPos_ = { 640,360 };
@@ -214,14 +234,17 @@ void Select::Draw()
 		0, 0, (int)bg_.rad.x, (int)bg_.rad.y,
 		bgTexture_, 0x191970ff);
 
-	if (isStarDraw_)
+	for (int i = 0; i < 6; i++)
 	{
-		Novice::DrawQuad((int)star_.LT.x, (int)star_.LT.y,
-			(int)star_.RT.x, (int)star_.RT.y,
-			(int)star_.LB.x, (int)star_.LB.y,
-			(int)star_.RB.x, (int)star_.RB.y,
-			0, 0, 64,64,
-			starTexture_, 0xffd700ff);
+		if (isStarDraw_[i] == 1)
+		{
+			Novice::DrawQuad((int)star_[i].LT.x, (int)star_[i].LT.y,
+				(int)star_[i].RT.x, (int)star_[i].RT.y,
+				(int)star_[i].LB.x, (int)star_[i].LB.y,
+				(int)star_[i].RB.x, (int)star_[i].RB.y,
+				0, 0, starSize_, starSize_,
+				starTexture_[2], WHITE);
+		}
 	}
 
 	if (isPopHuman_)
@@ -326,7 +349,7 @@ void Select::Draw()
 			(int)stageNumber_.RT.x, (int)stageNumber_.RT.y,
 			(int)stageNumber_.LB.x, (int)stageNumber_.LB.y,
 			(int)stageNumber_.RB.x, (int)stageNumber_.RB.y,
-			0, 0, 500, 200,
+			0, 0, (int)stageNumSize_.x, (int)stageNumSize_.y,
 			stageNumDraw_, WHITE);
 
 		Novice::DrawQuad((int)scoreFont_.LT.x, (int)scoreFont_.LT.y,
@@ -407,23 +430,41 @@ void Select::StageSelectUpdate()
 	}
 
 	stageNumDraw_ = stageNumTexter_[stageNum_-1];
+
+	if (stageNum_  < 10)
+	{
+		stageNumber_.center = { 380 ,220 };
+		stageNumber_.rad = { 400,160 };
+		stageNumSize_ = { 500,200 };
+	}
+	else
+	{
+		stageNumber_.center = { 420 ,220 };
+		stageNumber_.rad = { 500,160 };
+		stageNumSize_ = { 600,200 };
+	}
+
+	QuadVer(stageNumber_.center, stageNumber_.rad.x, stageNumber_.rad.y, stageNumber_.LT, stageNumber_.RT, stageNumber_.LB, stageNumber_.RB);
 }
 
 void Select::StarUpdate()
 {
-	if (starTime_ >= 0)
+	for (int i = 0; i < 6; i++)
 	{
-		starTime_ -= kTimeCount;
-	}
-	else if (isStarDraw_)
-	{
-		isStarDraw_ = false;
-		starTime_ = kStarEraseTime;
-	}
-	else if (!isStarDraw_)
-	{
-		isStarDraw_ = true;
-		starTime_ = kStarTime;
+		if (starTime_[i] >= 0)
+		{
+			starTime_[i] -= kTimeCount;
+		}
+		else if (isStarDraw_)
+		{
+			isStarDraw_[i] = false;
+			starTime_[i] = kStarEraseTime;
+		}
+		else if (!isStarDraw_)
+		{
+			isStarDraw_[i] = true;
+			starTime_[i] = kStarTime;
+		}
 	}
 }
 
