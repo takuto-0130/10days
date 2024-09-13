@@ -262,13 +262,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						mapLoad->Update(stageSelect->GetStageNum());
 						startMap = map;
 						scene = Scene::Game;
-						playTimer = kPlayTime;
 						breakCount = 0;
 						playerClass->Initialize();
 						MaxBreakCountSearch(maxBreakCount, startMap);
 						beforeJoyState = joyState;
 						audio->PlayWave(SE_click);
 						ApplyTime(mapLoad->GetNowStage(), kPlayTime);
+						playTimer = kPlayTime;
 					}
 				}
 				else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
@@ -277,12 +277,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					mapLoad->Update(stageSelect->GetStageNum());
 					startMap = map;
 					scene = Scene::Game;
-					playTimer = kPlayTime;
 					breakCount = 0;
 					playerClass->Initialize();
 					MaxBreakCountSearch(maxBreakCount, startMap);
 					audio->PlayWave(SE_click);
 					ApplyTime(mapLoad->GetNowStage(), kPlayTime);
+					playTimer = kPlayTime;
 				}
 
 
@@ -388,11 +388,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
 							startMap = map;
 							scene = Scene::Game;
-							playTimer = kPlayTime;
 							breakCount = 0;
 							playerClass->Initialize();
 							MaxBreakCountSearch(maxBreakCount, startMap);
 							ApplyTime(mapLoad->GetNowStage(), kPlayTime);
+							playTimer = kPlayTime;
 						}
 					}
 					else {
@@ -411,12 +411,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
 						startMap = map;
 						scene = Scene::Game;
-						playTimer = kPlayTime;
 						breakCount = 0;
 						playerClass->Initialize();
 						MaxBreakCountSearch(maxBreakCount, startMap);
 						blockParticle->Erase();
 						ApplyTime(mapLoad->GetNowStage(), kPlayTime);
+						playTimer = kPlayTime;
 					}
 				}
 				else {
