@@ -208,8 +208,8 @@ void PlayerClass::Update(const char* keys, const char* preKeys, XINPUT_STATE& jo
 
 	FindVertex(player_.center, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
-	playUI_.center = { topPosition.x + 50,topPosition.y };
-	playUI_.rad = { 50,30 };
+	playUI_.center = { topPosition.x + 90,topPosition.y };
+	playUI_.rad = { 130,30 };
 	QuadVer(playUI_.center, playUI_.rad.x, playUI_.rad.y, playUI_.LT, playUI_.RT, playUI_.LB, playUI_.RB);
 
 #ifdef _DEBUG
