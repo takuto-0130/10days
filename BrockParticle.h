@@ -14,10 +14,8 @@ public:
 
 	bool GetDeathFlag() { return isDeath_; }
 
-	 
 	void normalize(Vector2& vec);
-	
-	
+
 	void QuadVer(Vector2 pos, float width, float height, Vector2& lt, Vector2& rt, Vector2& lb, Vector2& rb);
 
 private:

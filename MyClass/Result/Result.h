@@ -43,7 +43,8 @@ private:
 	int forUITexture_[2];
 	int buttonTexture_ = 0;
 	int underBarTexture_ = 0;
-	int numberTexture_ = 0;
+	int numberTextureYellow_ = 0;
+	int numberTextureRed_ = 0;
 	int stageTexture_ = 0;
 	int humanTexture_ = 0;
 	int evaluationTexture_[3];
@@ -70,7 +71,7 @@ private:
 	const float kHumanCount = 0.02f;
 	const int kEvaluationTime = 60;
 	const float kEvaluationCount = 0.1f;
-	const int kScoreCT = 60;
+	const int kScoreCT = 30;
 
 	int starTime_ = 0;
 	float buttonTime_ = 0;

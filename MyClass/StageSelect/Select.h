@@ -6,7 +6,7 @@
 #include <math.h>
 #include "Easing.h"
 
-const int kStageNum = 5;
+const int kStageNum = 12;
 
 struct Matrix2x2
 {
@@ -71,6 +71,8 @@ private:
 	int uiTexture_ = 0;
 	int humanTexture_ = 0;
 	int numberTexture_ = 0;
+	int stageNumTexter_[kStageNum];
+	int scoreFontTexter_ = 0;
 
 	Quad bg_{};
 	Quad star_{};
@@ -81,6 +83,8 @@ private:
 	Quad ui_{};
 	Quad human_{};
 	Quad humanRotate_{};
+	Quad stageNumber_{};
+	Quad scoreFont_{};
 
 
 	const int kTimeCount = 1;
@@ -107,7 +111,7 @@ private:
 	int num_[4][5];
 	int numberSize_ = 64;
 
-	int stageNum_ = 0;
+	int stageNum_ = 1;
 	int changeStage = 0;
 	Vector2 topPos_{};
 	Vector2 nowPos_{};
@@ -129,6 +133,7 @@ private:
 	int highScore2_[5]{};
 	int highScore3_[5]{};
 	int highScore4_[5]{};
+	int stageNumDraw_ = 0;
 
 	Vector2 rotateLeftTop{};
 	Vector2 rotateRightTop{};

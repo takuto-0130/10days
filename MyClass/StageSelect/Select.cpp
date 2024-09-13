@@ -5,7 +5,7 @@ Select::~Select(){}
 
 void Select::Initialize()
 {
-	bgTexture_ = Novice::LoadTexture("./Resources/white1x1.png"); // 0x191970ff
+	bgTexture_ = Novice::LoadTexture("./Resources/backGround.png");
 	starTexture_ = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png");
 
 	stageTexture_[0] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
@@ -21,6 +21,14 @@ void Select::Initialize()
 	humanTexture_ = Novice::LoadTexture("./Resources/StageSelect/player.png");
 	numberTexture_ = Novice::LoadTexture("./Resources/number/namber_yellow.png");
 
+	stageNumTexter_[0]= Novice::LoadTexture("./Resources/StageSelect/stage1.png");
+	stageNumTexter_[1] = Novice::LoadTexture("./Resources/StageSelect/stage2.png");
+	stageNumTexter_[2] = Novice::LoadTexture("./Resources/StageSelect/stage3.png");
+	stageNumTexter_[3] = Novice::LoadTexture("./Resources/StageSelect/stage4.png");
+	stageNumTexter_[4] = Novice::LoadTexture("./Resources/StageSelect/stage5.png");
+
+	scoreFontTexter_ = Novice::LoadTexture("./Resources/StageSelect/stageScore.png");
+
 	bg_.center = { 640.0f,360.0f };
 	bg_.rad = { 1280.0f,720.0f };
 	QuadVer(bg_.center, bg_.rad.x, bg_.rad.y, bg_.LT, bg_.RT, bg_.LB, bg_.RB);
@@ -35,7 +43,7 @@ void Select::Initialize()
 	stage_[0].rad = { 980.0f,420.0f };
 	QuadVer(stage_[0].center, stage_[0].rad.x, stage_[0].rad.y, stage_[0].LT, stage_[0].RT, stage_[0].LB, stage_[0].RB);
 	
-	stage_[1].center = { 640.0f,750.0f };
+	stage_[1].center = { 640.0f,1080.0f };
 	stage_[1].rad = { 588.0f,216.0f };
 	QuadVer(stage_[1].center, stage_[1].rad.x, stage_[1].rad.y, stage_[1].LT, stage_[1].RT, stage_[1].LB, stage_[1].RB);
 
@@ -58,7 +66,18 @@ void Select::Initialize()
 	ui_.rad = { 350.0f,70.0f };
 	QuadVer(ui_.center, ui_.rad.x, ui_.rad.y, ui_.LT, ui_.RT, ui_.LB, ui_.RB);
 
-	
+
+	stageNumber_.center = {380 ,220 };
+	stageNumber_.rad = { 400,160 };
+	QuadVer(stageNumber_.center, stageNumber_.rad.x, stageNumber_.rad.y, stageNumber_.LT, stageNumber_.RT, stageNumber_.LB, stageNumber_.RB);
+
+	scoreFont_.center = { 840 ,380 };
+	scoreFont_.rad = { 240,60 };
+	QuadVer(scoreFont_.center, scoreFont_.rad.x, scoreFont_.rad.y, scoreFont_.LT, scoreFont_.RT, scoreFont_.LB, scoreFont_.RB);
+
+
+	stageNumDraw_ = stageNumTexter_[stageNum_ - 1];
+
 	buttonTime_ = kButtonTime;
 	starTime_ = kStarTime;
 	stageChangeInterval_ = kStageChangeTime;
@@ -70,9 +89,9 @@ void Select::Initialize()
 
 	stageNum_ = 1;
 
-	topPos_ = { 640.0f,-30.0f };
+	topPos_ = { 640.0f,-360.0f };
 	nowPos_ = { 640,360 };
-	underPos_ = { 640,750 };
+	underPos_ = { 640,1080 };
 	mainRad_= { 980.0f,420.0f };
 	subRad_ = { 588.0f,216.0f };
 
@@ -259,7 +278,7 @@ void Select::Draw()
 
 
 
-	if (stageNum_ != 5)
+	if (stageNum_ != kStageNum)
 	{
 		Novice::DrawQuad((int)arrow_[0].LB.x, (int)arrow_[0].LB.y,
 			(int)arrow_[0].RB.x, (int)arrow_[0].RB.y,
@@ -294,12 +313,29 @@ void Select::Draw()
 		}
 	}
 
-	Novice::DrawQuad((int)button_.LT.x, (int)button_.LT.y,
-		(int)button_.RT.x, (int)button_.RT.y,
-		(int)button_.LB.x, (int)button_.LB.y,
-		(int)button_.RB.x, (int)button_.RB.y,
-		0, 0, 66, 66,
-		buttonTexture_, WHITE);
+	if (stageChangeTime_ <= 0)
+	{
+		Novice::DrawQuad((int)button_.LT.x, (int)button_.LT.y,
+			(int)button_.RT.x, (int)button_.RT.y,
+			(int)button_.LB.x, (int)button_.LB.y,
+			(int)button_.RB.x, (int)button_.RB.y,
+			0, 0, 66, 66,
+			buttonTexture_, WHITE);
+
+		Novice::DrawQuad((int)stageNumber_.LT.x, (int)stageNumber_.LT.y,
+			(int)stageNumber_.RT.x, (int)stageNumber_.RT.y,
+			(int)stageNumber_.LB.x, (int)stageNumber_.LB.y,
+			(int)stageNumber_.RB.x, (int)stageNumber_.RB.y,
+			0, 0, 500, 200,
+			stageNumDraw_, WHITE);
+
+		Novice::DrawQuad((int)scoreFont_.LT.x, (int)scoreFont_.LT.y,
+			(int)scoreFont_.RT.x, (int)scoreFont_.RT.y,
+			(int)scoreFont_.LB.x, (int)scoreFont_.LB.y,
+			(int)scoreFont_.RB.x, (int)scoreFont_.RB.y,
+			0, 0, (int)scoreFont_.rad.x, (int)scoreFont_.rad.y,
+			scoreFontTexter_, WHITE);
+	}
 
 	Novice::DrawQuad((int)ui_.LT.x, (int)ui_.LT.y,
 		(int)ui_.RT.x, (int)ui_.RT.y,
@@ -307,7 +343,6 @@ void Select::Draw()
 		(int)ui_.RB.x, (int)ui_.RB.y,
 		0, 0, (int)ui_.rad.x, (int)ui_.rad.y,
 		uiTexture_, WHITE);
-
 }
 
 void Select::SetHighScore()
@@ -370,6 +405,8 @@ void Select::StageSelectUpdate()
 		stage_[stageNum_].center = Lerp(nowPos_, underPos_, stageChangeTime_); // now
 		stage_[stageNum_].rad = Lerp(mainRad_, subRad_, stageChangeTime_);
 	}
+
+	stageNumDraw_ = stageNumTexter_[stageNum_-1];
 }
 
 void Select::StarUpdate()

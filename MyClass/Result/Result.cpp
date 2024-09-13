@@ -8,7 +8,7 @@ Result::Result()
 	srand(currenttime);
 
 
-	bgTexture_ = Novice::LoadTexture("./Resources/white1x1.png"); // 0x191970ff
+	bgTexture_ = Novice::LoadTexture("./Resources/backGround.png");
 	starTexture_ = Novice::LoadTexture("./Resources/StageSelect/flowerYellow.png");
 	uiTexture_[0] = Novice::LoadTexture("./Resources/result/next.png");
 	uiTexture_[1] = Novice::LoadTexture("./Resources/result/title.png");
@@ -16,7 +16,8 @@ Result::Result()
 	forUITexture_[1] = Novice::LoadTexture("./Resources/result/for_title.png");
 	buttonTexture_ = Novice::LoadTexture("./Resources/StageSelect/A.png");
 	underBarTexture_ = Novice::LoadTexture("./Resources/white1x1.png");
-	numberTexture_ = Novice::LoadTexture("./Resources/number/namber_yellow.png");
+	numberTextureYellow_ = Novice::LoadTexture("./Resources/number/namber_yellow.png");
+	numberTextureRed_= Novice::LoadTexture("./Resources/number/namber_red.png");
 	stageTexture_ = Novice::LoadTexture("./Resources/result/stage.png");
 	humanTexture_ = Novice::LoadTexture("./Resources/result/backGround_player.png");
 	evaluationTexture_[0] = Novice::LoadTexture("./Resources/result/nice.png");
@@ -185,35 +186,35 @@ void Result::Draw()
 		(int)number_[0].LB.x, (int)number_[0].LB.y,
 		(int)number_[0].RB.x, (int)number_[0].RB.y,
 		numberSize_ * num_[0], 0, numberSize_, numberSize_,
-		numberTexture_, WHITE);
+		numberTextureYellow_, WHITE);
 
 	Novice::DrawQuad((int)number_[1].LT.x, (int)number_[1].LT.y,
 		(int)number_[1].RT.x, (int)number_[1].RT.y,
 		(int)number_[1].LB.x, (int)number_[1].LB.y,
 		(int)number_[1].RB.x, (int)number_[1].RB.y,
 		numberSize_ * num_[1], 0, numberSize_, numberSize_,
-		numberTexture_, WHITE);
+		numberTextureYellow_, WHITE);
 
 	Novice::DrawQuad((int)number_[2].LT.x, (int)number_[2].LT.y,
 		(int)number_[2].RT.x, (int)number_[2].RT.y,
 		(int)number_[2].LB.x, (int)number_[2].LB.y,
 		(int)number_[2].RB.x, (int)number_[2].RB.y,
 		numberSize_ * num_[2], 0, numberSize_, numberSize_,
-		numberTexture_, WHITE);
+		numberTextureYellow_, WHITE);
 
 	Novice::DrawQuad((int)number_[3].LT.x, (int)number_[3].LT.y,
 		(int)number_[3].RT.x, (int)number_[3].RT.y,
 		(int)number_[3].LB.x, (int)number_[3].LB.y,
 		(int)number_[3].RB.x, (int)number_[3].RB.y,
 		numberSize_ * num_[3], 0, numberSize_, numberSize_,
-		numberTexture_, WHITE);
+		numberTextureYellow_, WHITE);
 
 	Novice::DrawQuad((int)stageNum_.LT.x, (int)stageNum_.LT.y,
 		(int)stageNum_.RT.x, (int)stageNum_.RT.y,
 		(int)stageNum_.LB.x, (int)stageNum_.LB.y,
 		(int)stageNum_.RB.x, (int)stageNum_.RB.y,
 		numberSize_ * stageNumber_, 0, numberSize_, numberSize_,
-		numberTexture_, WHITE);
+		numberTextureRed_, WHITE);
 
 	Novice::DrawQuad((int)stage_.LT.x, (int)stage_.LT.y,
 		(int)stage_.RT.x, (int)stage_.RT.y,
