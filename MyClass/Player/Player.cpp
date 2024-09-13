@@ -46,6 +46,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 	playerTex2 = Novice::LoadTexture("./Resources/stage/body.png");
 	tyouTex = Novice::LoadTexture("./Resources/stage/long_tyo.png");
 	arrowTex = Novice::LoadTexture("./Resources/stage/arrow.png");
+	playUITex_= Novice::LoadTexture("./Resources/white1x1.png");
 
 	start1 = {};
 	stop1 = {};
@@ -162,6 +163,10 @@ void PlayerClass::Initialize()
 	speed = {};
 	ApplyGlobalVariables();
 	ScrollPosition(kResetPos, startPosReturn, startPosition, scroll_, 1, topPosition);
+
+	playUI_.center = { topPosition.x - 40,topPosition.y };
+	playUI_.rad = { 70,50 };
+	QuadVer(playUI_.center, playUI_.rad.x, playUI_.rad.y, playUI_.LT, playUI_.RT, playUI_.LB, playUI_.RB);
 }
 
 void PlayerClass::ApplyGlobalVariables() {
@@ -203,6 +208,9 @@ void PlayerClass::Update(const char* keys, const char* preKeys, XINPUT_STATE& jo
 
 	FindVertex(player_.center, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
+	playUI_.center = { topPosition.x + 50,topPosition.y };
+	playUI_.rad = { 50,30 };
+	QuadVer(playUI_.center, playUI_.rad.x, playUI_.rad.y, playUI_.LT, playUI_.RT, playUI_.LB, playUI_.RB);
 
 #ifdef _DEBUG
 	ImGui::Begin("window");
@@ -246,6 +254,13 @@ void PlayerClass::Draw()
 		int(player_.center.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y + (player_.len.y + player_.sizeChange.y) / 2),
 		int(player_.center.x + (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(player_.center.y + (player_.len.y + player_.sizeChange.y) / 2),
 		0, 0, blockSize, blockSize, playerTex, 0xFFFFFFFF);
+
+	Novice::DrawQuad(int(playUI_.LT.x) + int(*scroll_), int(playUI_.LT.y),
+		int(playUI_.RT.x) + int(*scroll_), int(playUI_.RT.y),
+		int(playUI_.LB.x) + int(*scroll_), int(playUI_.LB.y),
+		int(playUI_.RB.x) + int(*scroll_), int(playUI_.RB.y),
+		0, 0, int(playUI_.rad.x), int(playUI_.rad.y),
+		playUITex_, WHITE);
 }
 
 void PlayerClass::AngleSet(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState)
@@ -488,4 +503,15 @@ void PlayerClass::ScreenScroll()
 		}
 		ScrollPosition(kResetPos, startPosReturn, startPosition, scroll_, tReturnNow, topPosition);
 	}
+}
+
+void PlayerClass::QuadVer(Vector2 pos, float width, float height, Vector2& lt, Vector2& rt, Vector2& lb, Vector2& rb)
+{
+	float halfwidth = width / 2;
+	float halfheight = height / 2;
+
+	lt = { pos.x - halfwidth, pos.y - halfheight };
+	rt = { pos.x + halfwidth, pos.y - halfheight };
+	lb = { pos.x - halfwidth, pos.y + halfheight };
+	rb = { pos.x + halfwidth, pos.y + halfheight };
 }

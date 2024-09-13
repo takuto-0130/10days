@@ -68,6 +68,9 @@ private:
 
 	Stage* stage_ = nullptr;
 
+	int playUITex_ = 0; // プレイ中の発射ボタンのUIテクスチャ
+	Quad playUI_{};
+
 public:
 
 	/// <summary>
@@ -144,5 +147,8 @@ public:
 	void ScreenScroll();
 
 	void SetStage(Stage* stage) { stage_ = stage; }
+
+	void QuadVer(Vector2 pos, float width, float height, Vector2& lt, Vector2& rt, Vector2& lb, Vector2& rb);
+
 };
 
