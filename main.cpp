@@ -335,11 +335,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						breakCount = 0;
 						playerClass->Initialize();
 						MaxBreakCountSearch(maxBreakCount, startMap);
+						blockParticle->Erase();
 					}
 				}
 				else {
 					stageSelect->SetHighScore();
 					scene = Scene::Select;
+					scene = Scene::Title;
+					blockParticle->Erase();
 				}
 				audio->PlayWave(SE_click);
 			}

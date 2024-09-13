@@ -66,7 +66,8 @@ private:
 
 	int bgTexture_ = 0;
 	int starTexture_[3];
-	int stageTexture_[kStageNum];
+	int stageTexture_[2];
+	int stagePreviewTexture_[kStageNum];
 	int arrowTexture_[2];
 	int buttonTexture_ = 0;
 	int uiTexture_ = 0;
@@ -78,6 +79,7 @@ private:
 	Quad bg_{};
 	Quad star_[kStarNum];
 	Quad stage_[kStageNum];
+	Quad stagePreview_;
 	Quad number_[4][kStageNum];
 	Quad arrow_[2];
 	Quad button_{};
@@ -138,6 +140,8 @@ private:
 	int highScore3_[kStageNum]{};
 	int highScore4_[kStageNum]{};
 	int stageNumDraw_ = 0;
+	int previewDraw_ = 0;
+	int stageDraw_ = 0;
 
 	Vector2 rotateLeftTop{};
 	Vector2 rotateRightTop{};

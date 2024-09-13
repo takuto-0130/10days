@@ -69,3 +69,9 @@ void BrockEmitter::Emit(Vector2 pos)
 	laserList.push_back(newLaser);
 	
 }
+
+void BrockEmitter::Erase()
+{
+	particleList.clear();
+	laserList.clear();
+}

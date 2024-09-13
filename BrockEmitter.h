@@ -18,6 +18,8 @@ public:
 
 	void Emit(Vector2 pos);
 
+	void Erase();
+
 private:
 
 	std::list<BrockParticle> particleList;
