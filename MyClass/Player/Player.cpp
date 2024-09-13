@@ -68,6 +68,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 	globalVariables->AddItem(groupName, "playerRefrect Distance", kMoveDistance);
 	globalVariables->AddItem(groupName, "playerShot DistanceLimit", kPlayerLimitDistance);
 	globalVariables->AddItem(groupName, "blockResistPower default(0.15f)", kResistPower);
+	globalVariables->AddItem(groupName, "hanekaerujikann", tIncrease1);
 }
 
 PlayerClass::~PlayerClass()
@@ -172,6 +173,7 @@ void PlayerClass::ApplyGlobalVariables() {
 	kMoveDistance = globalVariables->GetFloatValue(groupName, "playerRefrect Distance");
 	kPlayerLimitDistance = globalVariables->GetFloatValue(groupName, "playerShot DistanceLimit");
 	kResistPower = globalVariables->GetFloatValue(groupName, "blockResistPower default(0.15f)");
+	tIncrease1 = globalVariables->GetFloatValue(groupName, "hanekaerujikann");
 }
 
 void PlayerClass::Update(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState)
