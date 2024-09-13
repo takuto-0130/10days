@@ -413,7 +413,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				else {
 					stageSelect->SetHighScore();
-					scene = Scene::Title;
+					scene = Scene::Select;
+					beforeJoyState = joyState;
 					blockParticle->Erase();
 				}
 				audio->PlayWave(SE_click);
