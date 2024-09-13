@@ -141,6 +141,10 @@ void Result::Initialize()
 
 void Result::Update(const char* keys, const char* preKeys)
 {
+	if (stageNumber_ == 12)
+	{
+		changeNext_ = 2;
+	}
 	XINPUT_STATE joyState;
 	Vector2 move{ 0, 0 };
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -233,12 +237,23 @@ void Result::Draw()
 
 	for (int i = 0; i < 2; i++)
 	{
-		Novice::DrawQuad((int)ui_[i].LT.x, (int)ui_[i].LT.y,
-			(int)ui_[i].RT.x, (int)ui_[i].RT.y,
-			(int)ui_[i].LB.x, (int)ui_[i].LB.y,
-			(int)ui_[i].RB.x, (int)ui_[i].RB.y,
-			0, 0, (int)uiTextureRad_[i].x, (int)uiTextureRad_[i].y,
-			nextUITex_[i], WHITE);
+		if(stageNumber_ != 12)
+		{
+			Novice::DrawQuad((int)ui_[i].LT.x, (int)ui_[i].LT.y,
+				(int)ui_[i].RT.x, (int)ui_[i].RT.y,
+				(int)ui_[i].LB.x, (int)ui_[i].LB.y,
+				(int)ui_[i].RB.x, (int)ui_[i].RB.y,
+				0, 0, (int)uiTextureRad_[i].x, (int)uiTextureRad_[i].y,
+				nextUITex_[i], WHITE);
+		}
+		else {
+			Novice::DrawQuad((int)ui_[1].LT.x, (int)ui_[1].LT.y,
+				(int)ui_[1].RT.x, (int)ui_[1].RT.y,
+				(int)ui_[1].LB.x, (int)ui_[1].LB.y,
+				(int)ui_[1].RB.x, (int)ui_[1].RB.y,
+				0, 0, (int)uiTextureRad_[1].x, (int)uiTextureRad_[1].y,
+				nextUITex_[1], WHITE);
+		}
 	}
 
 	Novice::DrawQuad((int)button_.LT.x, (int)button_.LT.y,
@@ -540,15 +555,21 @@ void Result::HumanUpdate()
 
 void Result::ChangeNext()
 {
-	if (changeNext_ == 1)
+	if(stageNumber_ != 12)
 	{
+		if (changeNext_ == 1)
+		{
+			changeNext_ = 2;
+		}
+		else if (changeNext_ == 2)
+		{
+			changeNext_ = 1;
+		}
+		Audio::GetInstance()->PlayWave(SE_scroll);
+	}
+	else {
 		changeNext_ = 2;
 	}
-	else if (changeNext_ == 2)
-	{
-		changeNext_ = 1;
-	}
-	Audio::GetInstance()->PlayWave(SE_scroll);
 }
 
 Vector2 Result::Lerp(const Vector2& v1, const Vector2& v2, float t)

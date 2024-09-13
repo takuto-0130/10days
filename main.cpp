@@ -74,7 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockParticle.reset(new BrockEmitter());
 	blockParticle->Initialize();
 
-	uint32_t kPlayTime = 5999;	// ステージの最大プレイ時間（5999）
+	uint32_t kPlayTime = /*599*/9;	// ステージの最大プレイ時間（5999）
 	uint32_t playTimer = kPlayTime;	// ステージの残りプレイ時間
 	Timedisp timeDisplay{};	// プレイ時間表示用
 
@@ -306,7 +306,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
 					if (result->GetChaangeNext() == 1) {
-						if (mapLoad->GetNowStage() != Stage::Stage5) {
+						if (mapLoad->GetNowStage() != Stage::Stage12) {
 							mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
 							startMap = map;
 							scene = Scene::Game;
