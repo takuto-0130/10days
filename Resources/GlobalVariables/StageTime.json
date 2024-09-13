@@ -1,16 +1,16 @@
 {
     "StageTime": {
         "Stage1": 1302,
-        "Stage10": 1859,
-        "Stage11": 1859,
-        "Stage12": 1859,
-        "Stage2": 1859,
+        "Stage10": 6000,
+        "Stage11": 2700,
+        "Stage12": 6000,
+        "Stage2": 1500,
         "Stage3": 1859,
-        "Stage4": 1859,
-        "Stage5": 1859,
-        "Stage6": 1859,
-        "Stage7": 1859,
-        "Stage8": 1859,
-        "Stage9": 1859
+        "Stage4": 2100,
+        "Stage5": 3000,
+        "Stage6": 1500,
+        "Stage7": 4200,
+        "Stage8": 2700,
+        "Stage9": 3600
     }
 }
