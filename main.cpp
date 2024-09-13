@@ -298,10 +298,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						breakCount = 0;
 						playerClass->Initialize();
 						MaxBreakCountSearch(maxBreakCount, startMap);
+						blockParticle->Erase();
 					}
 				}
 				else {
 					scene = Scene::Title;
+					blockParticle->Erase();
 				}
 			}
 
