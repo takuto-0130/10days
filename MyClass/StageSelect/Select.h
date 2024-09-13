@@ -78,7 +78,7 @@ private:
 	Quad bg_{};
 	Quad star_[kStarNum];
 	Quad stage_[kStageNum];
-	Quad number_[4][5];
+	Quad number_[4][kStageNum];
 	Quad arrow_[2];
 	Quad button_{};
 	Quad ui_{};
@@ -109,7 +109,7 @@ private:
 
 	bool isStarDraw_[kStarNum];
 
-	int num_[4][5];
+	int num_[4][kStageNum];
 	int numberSize_ = 64;
 
 	int starSize_ = 64;
@@ -133,10 +133,10 @@ private:
 	bool isPoyonChange_ = false;
 	bool isPopHuman_ = false;
 
-	int highScore_[5]{};
-	int highScore2_[5]{};
-	int highScore3_[5]{};
-	int highScore4_[5]{};
+	int highScore_[kStageNum]{};
+	int highScore2_[kStageNum]{};
+	int highScore3_[kStageNum]{};
+	int highScore4_[kStageNum]{};
 	int stageNumDraw_ = 0;
 
 	Vector2 rotateLeftTop{};

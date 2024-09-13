@@ -15,6 +15,14 @@ void Select::Initialize()
 	stageTexture_[2] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
 	stageTexture_[3] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
 	stageTexture_[4] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
+	stageTexture_[5] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
+	stageTexture_[6] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
+	stageTexture_[7] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
+	stageTexture_[8] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
+	stageTexture_[9] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
+	stageTexture_[10] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
+	stageTexture_[11] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
+
 
 	arrowTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
 	arrowTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
@@ -301,7 +309,7 @@ void Select::Draw()
 		(int)stage_[0].LB.x, (int)stage_[0].LB.y,
 		(int)stage_[0].RB.x, (int)stage_[0].RB.y,
 		0, 0, (int)stage_[0].rad.x, (int)stage_[0].rad.y,
-		stageTexture_[0], 0x000000ff);
+		stageTexture_[0], 0x999999ff);
 
 	Novice::DrawQuad((int)stage_[1].LT.x, (int)stage_[1].LT.y,
 		(int)stage_[1].RT.x, (int)stage_[1].RT.y,
@@ -331,6 +339,54 @@ void Select::Draw()
 		0, 0, (int)stage_[4].rad.x, (int)stage_[4].rad.y,
 		stageTexture_[4], 0xfffafaff);
 
+	Novice::DrawQuad((int)stage_[5].LT.x, (int)stage_[5].LT.y,
+		(int)stage_[5].RT.x, (int)stage_[5].RT.y,
+		(int)stage_[5].LB.x, (int)stage_[5].LB.y,
+		(int)stage_[5].RB.x, (int)stage_[5].RB.y,
+		0, 0, (int)stage_[5].rad.x, (int)stage_[5].rad.y,
+		stageTexture_[5], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[6].LT.x, (int)stage_[6].LT.y,
+		(int)stage_[6].RT.x, (int)stage_[6].RT.y,
+		(int)stage_[6].LB.x, (int)stage_[6].LB.y,
+		(int)stage_[6].RB.x, (int)stage_[6].RB.y,
+		0, 0, (int)stage_[6].rad.x, (int)stage_[6].rad.y,
+		stageTexture_[6], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[7].LT.x, (int)stage_[7].LT.y,
+		(int)stage_[7].RT.x, (int)stage_[7].RT.y,
+		(int)stage_[7].LB.x, (int)stage_[7].LB.y,
+		(int)stage_[7].RB.x, (int)stage_[7].RB.y,
+		0, 0, (int)stage_[7].rad.x, (int)stage_[7].rad.y,
+		stageTexture_[4], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[8].LT.x, (int)stage_[8].LT.y,
+		(int)stage_[8].RT.x, (int)stage_[8].RT.y,
+		(int)stage_[8].LB.x, (int)stage_[8].LB.y,
+		(int)stage_[8].RB.x, (int)stage_[8].RB.y,
+		0, 0, (int)stage_[4].rad.x, (int)stage_[8].rad.y,
+		stageTexture_[8], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[9].LT.x, (int)stage_[9].LT.y,
+		(int)stage_[9].RT.x, (int)stage_[9].RT.y,
+		(int)stage_[9].LB.x, (int)stage_[9].LB.y,
+		(int)stage_[9].RB.x, (int)stage_[9].RB.y,
+		0, 0, (int)stage_[9].rad.x, (int)stage_[9].rad.y,
+		stageTexture_[9], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[10].LT.x, (int)stage_[10].LT.y,
+		(int)stage_[10].RT.x, (int)stage_[10].RT.y,
+		(int)stage_[10].LB.x, (int)stage_[10].LB.y,
+		(int)stage_[10].RB.x, (int)stage_[10].RB.y,
+		0, 0, (int)stage_[10].rad.x, (int)stage_[10].rad.y,
+		stageTexture_[10], 0xfffafaff);
+
+	Novice::DrawQuad((int)stage_[11].LT.x, (int)stage_[11].LT.y,
+		(int)stage_[11].RT.x, (int)stage_[11].RT.y,
+		(int)stage_[11].LB.x, (int)stage_[11].LB.y,
+		(int)stage_[11].RB.x, (int)stage_[11].RB.y,
+		0, 0, (int)stage_[11].rad.x, (int)stage_[11].rad.y,
+		stageTexture_[11], 0xfffafaff);
 
 
 	if (stageNum_ != kStageNum)
@@ -342,6 +398,7 @@ void Select::Draw()
 			0, 0, (int)arrow_[0].rad.x, (int)arrow_[0].rad.y,
 			arrowTexture_[0], WHITE);
 	}
+
 	if (stageNum_ != 1)
 	{
 		Novice::DrawQuad((int)arrow_[1].LT.x, (int)arrow_[1].LT.y,
@@ -352,7 +409,7 @@ void Select::Draw()
 			arrowTexture_[1], WHITE);
 	}
 
-	for (int j = 0; j < 5; j++)
+	for (int j = 0; j < kStageNum; j++)
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -409,6 +466,13 @@ void Select::SetHighScore()
 	highScore_[2] = globalVariables->GetIntValue(groupName, "Stage3");
 	highScore_[3] = globalVariables->GetIntValue(groupName, "Stage4");
 	highScore_[4] = globalVariables->GetIntValue(groupName, "Stage5");
+	/*highScore_[5] = globalVariables->GetIntValue(groupName, "Stage6");
+	highScore_[6] = globalVariables->GetIntValue(groupName, "Stage7");
+	highScore_[7] = globalVariables->GetIntValue(groupName, "Stage8");
+	highScore_[8] = globalVariables->GetIntValue(groupName, "Stage9");
+	highScore_[9] = globalVariables->GetIntValue(groupName, "Stage10");
+	highScore_[10] = globalVariables->GetIntValue(groupName, "Stage11");
+	highScore_[11] = globalVariables->GetIntValue(groupName, "Stage12");*/
 }
 
 void Select::PlusStageNum()
@@ -538,7 +602,7 @@ void Select::ButtonUpdate()
 
 void Select::HighScoreUpdate()
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < kStageNum; i++)
 	{
 		num_[0][i] = highScore_[i] % 10;
 		highScore2_[i] = (highScore_[i] - num_[0][i]) / 10;
@@ -562,7 +626,7 @@ void Select::HighScoreUpdate()
 		number_[3][i].rad = number_[0][i].rad;
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < kStageNum; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
