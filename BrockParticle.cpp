@@ -24,8 +24,8 @@ BrockParticle::BrockParticle(Vector2 pos, float rad)
 
 	color_ = 0xffffff90;
 	alpha_ = 0x00000003;
-}
 
+}
 
 void BrockParticle::Update()
 {
@@ -93,6 +93,7 @@ void BrockParticle::normalize(Vector2& vec)
 
 void BrockParticle::QuadVer(Vector2 pos, float width, float height, Vector2& lt, Vector2& rt, Vector2& lb, Vector2& rb)
 {
+
 	float halfwidth = width / 2;
 	float halfheight = height / 2;
 
@@ -100,5 +101,5 @@ void BrockParticle::QuadVer(Vector2 pos, float width, float height, Vector2& lt,
 	rt = { pos.x + halfwidth, pos.y - halfheight };
 	lb = { pos.x - halfwidth, pos.y + halfheight };
 	rb = { pos.x + halfwidth, pos.y + halfheight };
-};
 
+}

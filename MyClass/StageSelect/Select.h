@@ -6,7 +6,8 @@
 #include <math.h>
 #include "Easing.h"
 
-const int kStageNum = 5;
+const int kStageNum = 12;
+const int kStarNum = 9;
 
 struct Matrix2x2
 {
@@ -64,23 +65,27 @@ public:
 private:
 
 	int bgTexture_ = 0;
-	int starTexture_ = 0;
+	int starTexture_[3];
 	int stageTexture_[kStageNum];
 	int arrowTexture_[2];
 	int buttonTexture_ = 0;
 	int uiTexture_ = 0;
 	int humanTexture_ = 0;
 	int numberTexture_ = 0;
+	int stageNumTexter_[kStageNum];
+	int scoreFontTexter_ = 0;
 
 	Quad bg_{};
-	Quad star_{};
+	Quad star_[kStarNum];
 	Quad stage_[kStageNum];
-	Quad number_[4][5];
+	Quad number_[4][kStageNum];
 	Quad arrow_[2];
 	Quad button_{};
 	Quad ui_{};
 	Quad human_{};
 	Quad humanRotate_{};
+	Quad stageNumber_{};
+	Quad scoreFont_{};
 
 
 	const int kTimeCount = 1;
@@ -94,7 +99,7 @@ private:
 
 	int buttonTime_ = 0;
 	float poyonTime_ = 0;
-	int starTime_ = 0;
+	int starTime_[kStarNum];
 	int stageChangeInterval_ = 0;
 	float stageChangeTime_ = 0;
 	float arrowTimeCo = 0.02f;
@@ -102,12 +107,15 @@ private:
 	int humanPopTime_ = 0;
 	float theta_ = 0;
 
-	bool isStarDraw_ = true;
+	bool isStarDraw_[kStarNum];
 
-	int num_[4][5];
+	int num_[4][kStageNum];
 	int numberSize_ = 64;
 
-	int stageNum_ = 0;
+	int starSize_ = 64;
+	Vector2 stageNumSize_ = { 500,200 };
+
+	int stageNum_ = 1;
 	int changeStage = 0;
 	Vector2 topPos_{};
 	Vector2 nowPos_{};
@@ -125,10 +133,11 @@ private:
 	bool isPoyonChange_ = false;
 	bool isPopHuman_ = false;
 
-	int highScore_[5]{};
-	int highScore2_[5]{};
-	int highScore3_[5]{};
-	int highScore4_[5]{};
+	int highScore_[kStageNum]{};
+	int highScore2_[kStageNum]{};
+	int highScore3_[kStageNum]{};
+	int highScore4_[kStageNum]{};
+	int stageNumDraw_ = 0;
 
 	Vector2 rotateLeftTop{};
 	Vector2 rotateRightTop{};

@@ -122,6 +122,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Function.cpp" />
+    <ClCompile Include="Laser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyClass\GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="MyClass\MapLoad\MapLoad.cpp" />
@@ -164,6 +165,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="Laser.h" />
     <ClInclude Include="MyClass\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="MyClass\MapLoad\MapLoad.h" />
     <ClInclude Include="MyClass\Player\Player.h" />
