@@ -56,7 +56,7 @@ void Select::Initialize()
 	QuadVer(bg_.center, bg_.rad.x, bg_.rad.y, bg_.LT, bg_.RT, bg_.LB, bg_.RB);
 	
 
-	star_[0].center = {150.0f,50.0f};
+	star_[0].center = {200.0f,50.0f};
 	star_[1].center = { 1200.0f,650.0f };
 	star_[2].center = { 1170.0f,70.0f };
 	star_[3].center = { 1050.0f,90.0f };
@@ -289,7 +289,7 @@ void Select::Draw()
 		(int)bg_.LB.x, (int)bg_.LB.y,
 		(int)bg_.RB.x, (int)bg_.RB.y,
 		0, 0, (int)bg_.rad.x, (int)bg_.rad.y,
-		bgTexture_, 0x191970ff);
+		bgTexture_, WHITE);
 
 	for (int i = 0; i < 3; i++)
 	{
