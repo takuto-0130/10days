@@ -46,7 +46,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 	playerTex2 = Novice::LoadTexture("./Resources/stage/body.png");
 	tyouTex = Novice::LoadTexture("./Resources/stage/long_tyo.png");
 	arrowTex = Novice::LoadTexture("./Resources/stage/arrow.png");
-	playUITex_= Novice::LoadTexture("./Resources/white1x1.png");
+	playUITex_= Novice::LoadTexture("./Resources/stage/ui.png");
 
 	start1 = {};
 	stop1 = {};
