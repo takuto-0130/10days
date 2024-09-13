@@ -115,4 +115,8 @@ private:
 	Vector2 evaluationStopTPos_{};
 	Vector2 evaluationStartBPos_{};
 	Vector2 evaluationStopBPos_{};
+
+	uint32_t SE_scroll = 0;
+
+	float beforeY = 0;
 };

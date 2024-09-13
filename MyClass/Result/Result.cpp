@@ -1,6 +1,9 @@
 #include "Result.h"
 #include <time.h>
 #include <stdio.h>
+#include <Audio.h>
+#include "Function.h"
+#include "Input.h"
 
 Result::Result()
 {
@@ -22,6 +25,9 @@ Result::Result()
 	evaluationTexture_[0] = Novice::LoadTexture("./Resources/result/nice.png");
 	evaluationTexture_[1] = Novice::LoadTexture("./Resources/result/omigoto.png");
 	evaluationTexture_[2] = Novice::LoadTexture("./Resources/result/saikou.png");
+
+	Audio* audio = Audio::GetInstance();
+	SE_scroll = audio->LoadWave("./Resources/Sound/SE_scroll.mp3");
 
 	Initialize();
 
@@ -116,13 +122,35 @@ void Result::Initialize()
 
 void Result::Update(const char* keys, const char* preKeys)
 {
-	if (keys[(DIK_W)] && !preKeys[(DIK_W)])
-	{
-		ChangeNext();
+	XINPUT_STATE joyState;
+	Vector2 move{ 0, 0 };
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		const float threshold = 0.7f;
+		bool isMoving = false;
+		move = { float(joyState.Gamepad.sThumbLX) / SHRT_MAX, float(joyState.Gamepad.sThumbLY) / SHRT_MAX };
+		if (Length(move) > threshold) {
+			isMoving = true;
+		}
+		if (isMoving) {
+			move.y += float(joyState.Gamepad.sThumbLY) / SHRT_MAX;
+		}
+		if (move.y < 0 && beforeY == 0) {
+			ChangeNext();
+		}
+		if (move.y > 0 && beforeY == 0) {
+			ChangeNext();
+		}
+		beforeY = move.y;
 	}
-	if (keys[(DIK_S)] && !preKeys[(DIK_S)])
-	{
-		ChangeNext();
+	else {
+		if (keys[(DIK_W)] && !preKeys[(DIK_W)])
+		{
+			ChangeNext();
+		}
+		if (keys[(DIK_S)] && !preKeys[(DIK_S)])
+		{
+			ChangeNext();
+		}
 	}
 
 	if (scoreCT_ >= 0)
@@ -469,6 +497,7 @@ void Result::ChangeNext()
 	{
 		changeNext_ = 1;
 	}
+	Audio::GetInstance()->PlayWave(SE_scroll);
 }
 
 Vector2 Result::Lerp(const Vector2& v1, const Vector2& v2, float t)

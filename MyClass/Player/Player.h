@@ -5,6 +5,7 @@
 #ifdef _DEBUG
 #include <imgui.h>
 #endif // _DEBUG
+#include "Input.h"
 
 class PlayerClass
 {
@@ -18,6 +19,7 @@ private:
 	Vector2 stopPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 
 	float playerShotAngle = 0;	// プレイヤーの角度
+	float shootAngle = 0;
 	const float kPlayerChangeAngle = float(M_PI) / 90;	// プレイヤーの射出される角度調整（キーボード）
 	Vector2 playerShotDir = { 0,2 };	// プレイヤーの射出される初期角度
 	Vector2 viewDir = playerShotDir;
@@ -39,6 +41,7 @@ private:
 
 	int playerTex = 0;	// プレイヤーのテクスチャハンドル
 	int playerTex2 = 0;	// プレイヤーのテクスチャハンドル
+	int tyouTex = 0;	// プレイヤーのテクスチャハンドル
 
 	Vector2 topPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 
@@ -87,7 +90,7 @@ public:
 	/// </summary>
 	/// <param name="keys">キー入力</param>
 	/// <param name="preKeys">前フレームのキー入力</param>
-	void Update(const char* keys, const char* preKeys);
+	void Update(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState);
 
 	/// <summary>
 	/// 描画処理
@@ -116,7 +119,7 @@ public:
 	/// </summary>
 	/// <param name="keys">キー入力</param>
 	/// <param name="preKeys">前フレームのキー入力</param>
-	void AngleSet(const char* keys, const char* preKeys);
+	void AngleSet(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState);
 
 	void RefrectShooting();
 
@@ -132,7 +135,7 @@ public:
 	/// </summary>
 	/// <param name="keys">キー入力</param>
 	/// <param name="preKeys">前フレームのキー入力</param>
-	void Operation(const char* keys);
+	void Operation(const char* keys, XINPUT_STATE& joyState);
 
 	/// <summary>
 	/// 画面スクロール

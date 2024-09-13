@@ -15,7 +15,7 @@ public:
 	void SetStage(Stage* stage) { stage_ = stage; }
 
 private:
-	int stageScore_[5] = {};
+	int stageScore_[12] = {};
 	Stage* stage_ = nullptr;
 };
 

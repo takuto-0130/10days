@@ -1,5 +1,8 @@
 #include "Select.h"
 #include "MyClass/GlobalVariables/GlobalVariables.h"
+#include <Audio.h>
+#include "Input.h"
+#include "Function.h"
 
 Select::~Select(){}
 
@@ -89,17 +92,41 @@ void Select::Initialize()
 	isPopHuman_ = false;
 
 	scorePos_ = { 350,100 };
+	Audio* audio = Audio::GetInstance();
+	SE_scroll = audio->LoadWave("./Resources/Sound/SE_scroll.mp3");
 }
 
 void Select::Update(const char* keys, const char* preKeys)
 {
-	if (keys[DIK_W] && !preKeys[DIK_W])
-	{
-		MinasStageNum();
+	XINPUT_STATE joyState;
+	Vector2 move{ 0, 0 };
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		const float threshold = 0.7f;
+		bool isMoving = false;
+		move = { float(joyState.Gamepad.sThumbLX) / SHRT_MAX, float(joyState.Gamepad.sThumbLY) / SHRT_MAX };
+		if (Length(move) > threshold) {
+			isMoving = true;
+		}
+		if (isMoving) {
+			move.y += float(joyState.Gamepad.sThumbLY) / SHRT_MAX;
+		}
+		if (move.y < 0 && beforeY == 0) {
+			PlusStageNum();
+		}
+		if (move.y > 0 && beforeY == 0) {
+			MinasStageNum();
+		}
+		beforeY = move.y;
 	}
-	if (keys[DIK_S] && !preKeys[DIK_S])
-	{
-		PlusStageNum();
+	else {
+		if (keys[DIK_W] && !preKeys[DIK_W])
+		{
+			MinasStageNum();
+		}
+		if (keys[DIK_S] && !preKeys[DIK_S])
+		{
+			PlusStageNum();
+		}
 	}
 	if (stageChangeInterval_ > 0)
 	{
@@ -328,10 +355,7 @@ void Select::PlusStageNum()
 		stageNum_ += 1;
 		stageChangeInterval_ = kStageChangeTime;
 		changeStage = 1;
-		/*if (stageNum_ == kStageNum + 1)
-		{
-			stageNum_ = 1;
-		}*/
+		Audio::GetInstance()->PlayWave(SE_scroll);
 	}
 }
 
@@ -342,6 +366,7 @@ void Select::MinasStageNum()
 		stageNum_ -= 1;
 		stageChangeInterval_ = kStageChangeTime;
 		changeStage = -1;
+		Audio::GetInstance()->PlayWave(SE_scroll);
 	}
 }
 

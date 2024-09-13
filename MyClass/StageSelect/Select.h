@@ -136,4 +136,8 @@ private:
 	Vector2 rotateRightBottom{};
 
 	Vector2 scorePos_{};
+
+	uint32_t SE_scroll = 0;
+
+	float beforeY = 0;
 };

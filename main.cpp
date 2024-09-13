@@ -10,6 +10,7 @@
 #include "MyClass/Result/Result.h"
 #include "MyClass/ScoreLibrary//ScoreLibrary.h"
 #include <Input.h>
+#include <Audio.h>
 
 const char kWindowTitle[] = "10daysTest";
 
@@ -23,14 +24,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, kWindowWidth, 720);
 
-	//float gravity = 0.02f;
+	Audio* audio = Audio::GetInstance();
+
+	uint32_t BGM = audio->LoadWave("./Resources/Sound/BGM_1.mp3");
+	audio->PlayWave(BGM, true);
+	audio->SetVolume(BGM, 1.0f);
+
+	uint32_t SE_block = audio->LoadWave("./Resources/Sound/SE_block_2.mp3");
+	uint32_t SE_click = audio->LoadWave("./Resources/Sound/SE_click_1.mp3");
 
 #pragma region // 画像読み込み
-	int mapTex = Novice::LoadTexture("./Resources/mapBlock.png");
+	int mapTex = Novice::LoadTexture("./Resources/stage/playerBlock.png");
 	int pinkBlock = Novice::LoadTexture("./Resources/stage/Block.png");
-	int bgTex = Novice::LoadTexture("./Resources/bg.png");
+	int bgTex = Novice::LoadTexture("./Resources/stage/backGround.png");
 	int block = Novice::LoadTexture("white1x1.png");
-	//int titleTex = Novice::LoadTexture("./Resources/title.png");
 
 #ifndef _DEBUG
 	int numberTex = Novice::LoadTexture("./Resources/numberTex.png");
@@ -48,7 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	MapChipNum map{};	// マップチップのデータを保存
-	LoadMap(map, "./Resources/sample2.csv");
+	LoadMap(map, "./Resources/csvMap/stage_1.csv");
 	MapChipNum startMap = map;	// ステージスタート時のマップを保存
 
 
@@ -65,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockParticle.reset(new BrockEmitter());
 	blockParticle->Initialize();
 
-	uint32_t kPlayTime = 300;	// ステージの最大プレイ時間（5999）
+	uint32_t kPlayTime = 1900;	// ステージの最大プレイ時間（5999）
 	uint32_t playTimer = kPlayTime;	// ステージの残りプレイ時間
 	Timedisp timeDisplay{};	// プレイ時間表示用
 
@@ -105,6 +112,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input::GetInstance()->GetJoystickState(0, joyState);
 	XINPUT_STATE beforeJoyState = joyState;
 
+	const int kEndTime = 90;
+	const int kEndAnimationTime = 60;
+	int endTimer = 0;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -125,7 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat("scroll", &scroll, 1.0f);
 		ImGui::End();
 #endif // _DEBUG
-
+		audio->SetVolume(BGM, 1.0f);
 		switch (scene) {
 		case Scene::Title:
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -134,6 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					stageSelect->SetHighScore();
 					scene = Scene::Select;
 					beforeJoyState = joyState;
+					audio->PlayWave(SE_click);
 				}
 			}
 			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
@@ -141,6 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				stageSelect->Initialize();
 				stageSelect->SetHighScore();
 				scene = Scene::Select;
+				audio->PlayWave(SE_click);
 			}
 			break;
 		case Scene::Select:
@@ -155,6 +168,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					playerClass->Initialize();
 					MaxBreakCountSearch(maxBreakCount, startMap);
 					beforeJoyState = joyState;
+					audio->PlayWave(SE_click);
 				}
 			}
 			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
@@ -167,6 +181,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				breakCount = 0;
 				playerClass->Initialize();
 				MaxBreakCountSearch(maxBreakCount, startMap);
+				audio->PlayWave(SE_click);
 			}
 
 
@@ -174,11 +189,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
 					scene = Scene::Title;
 					beforeJoyState = joyState;
+					audio->PlayWave(SE_click);
 				}
 			}
 			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
 				scene = Scene::Title;
+				audio->PlayWave(SE_click);
 			}
 			break;
 		case Scene::Game:
@@ -187,32 +204,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// HitStop
 			if (playTimer > 0 && maxBreakCount > breakCount) {
 				playTimer--;
+				endTimer = 0;
 			}
 			else {
 #pragma region // ステージ終了時
-				if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-					if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
-						result->Initialize();
-						result->SetScore(breakCount);
-						result->SetStage(static_cast<int>(mapLoad->GetNowStage()) + 1);
-						historyScore->Update(breakCount);
-						float scorePercent = float(breakCount) / float(maxBreakCount);
-						if (scorePercent <= 0.5f) {
-							result->SetEvaluation(0);
-						}
-						else if (scorePercent <= 0.8f) {
-							result->SetEvaluation(1);
-						}
-						else {
-							result->SetEvaluation(2);
-						}
-						result->UIUpdate();
-						scene = Scene::Clear;
-						beforeJoyState = joyState;
-					}
+				audio->SetVolume(BGM, 0.5f);
+				if (endTimer < kEndTime) {
+					endTimer++;
 				}
-				else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
-				{
+				else {
 					result->Initialize();
 					result->SetScore(breakCount);
 					result->SetStage(static_cast<int>(mapLoad->GetNowStage()) + 1);
@@ -229,6 +229,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					result->UIUpdate();
 					scene = Scene::Clear;
+					beforeJoyState = joyState;
 				}
 #pragma endregion
 			}
@@ -239,12 +240,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				if (hitStopTimer <= 0) {
 					//					
-					playerClass->Update(keys, preKeys);
+					playerClass->Update(keys, preKeys, joyState, beforeJoyState);
 
 					CollisionBlock(map, playerClass->GetPlayer(), kResistPower, kHitStopFrame, hitStopTimer, blockParticle.get(), breakCount);
 
 					ScoreDisplay(breakCount, score);
 
+				}
+				if (hitStopTimer == kHitStopFrame) {
+					audio->PlayWave(SE_block);
 				}
 				if (hitStopTimer >= 0) {
 					hitStopTimer--;
@@ -267,6 +271,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case Scene::Clear:
+			audio->SetVolume(BGM, 0.5f);
 			result->Update(keys, preKeys);
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
@@ -285,12 +290,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						scene = Scene::Title;
 					}
 					beforeJoyState = joyState;
+					audio->PlayWave(SE_click);
 				}
 			}
 			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
 			{
 				if (result->GetChaangeNext() == 1) {
-					if (mapLoad->GetNowStage() != Stage::Stage5) {
+					if (mapLoad->GetNowStage() != Stage::Stage12) {
 						mapLoad->Update(static_cast<int>(mapLoad->GetNowStage()) + 2);
 						startMap = map;
 						scene = Scene::Game;
@@ -303,6 +309,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				else {
 					scene = Scene::Title;
 				}
+				audio->PlayWave(SE_click);
 			}
 
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -310,12 +317,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					stageSelect->SetHighScore();
 					scene = Scene::Select;
 					beforeJoyState = joyState;
+					audio->PlayWave(SE_click);
 				}
 			}
 			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
 			{
 				stageSelect->SetHighScore();
 				scene = Scene::Select;
+				audio->PlayWave(SE_click);
 			}
 			break;
 		}
@@ -415,6 +424,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 #endif // !_DEBUG
+			if (endTimer > 1) {
+				if (endTimer < kEndAnimationTime) {
+					Novice::DrawBox(1280 - int(1280.0f * float(endTimer) / float(kEndAnimationTime)), 170, 1280, 380, 0.0f, 0x443399FF, kFillModeSolid);
+				}
+				else {
+					Novice::DrawBox(0, 170, 1280, 380, 0.0f, 0x443399FF, kFillModeSolid);
+				}
+			}
 			beforeScore = score;
 #pragma endregion
 			break;

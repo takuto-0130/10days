@@ -44,6 +44,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 	SetScroll(scroll);
 	playerTex = Novice::LoadTexture("./Resources/stage/leg.png");
 	playerTex2 = Novice::LoadTexture("./Resources/stage/body.png");
+	tyouTex = Novice::LoadTexture("./Resources/stage/long_tyo.png");
 
 	start1 = {};
 	stop1 = {};
@@ -79,16 +80,37 @@ void PlayerClass::Initialize()
 		kResetPos = { 12 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage2:
-		kResetPos = { 19 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage3:
 		kResetPos = { 25 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage4:
-		kResetPos = { 5 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		kResetPos = { 5 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage5:
-		kResetPos = { 30 * blockSize + blockSize / 2, 1 * blockSize + blockSize / 2 };
+		kResetPos = { 30 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage6:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage7:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage8:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage9:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage10:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage11:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		break;
+	case Stage::Stage12:
+		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	}
 	player_.worldPos = kResetPos;
@@ -151,15 +173,15 @@ void PlayerClass::ApplyGlobalVariables() {
 	kResistPower = globalVariables->GetFloatValue(groupName, "blockResistPower default(0.15f)");
 }
 
-void PlayerClass::Update(const char* keys, const char* preKeys)
+void PlayerClass::Update(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState)
 {
 	ApplyGlobalVariables();
 
-	AngleSet(keys, preKeys);
+	AngleSet(keys, preKeys, joyState, beforeJpyState);
 
 	Shooting();
 	
-	Operation(keys);
+	Operation(keys, joyState);
 
 	ScreenScroll();
 
@@ -179,13 +201,13 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 	FindVertex(player_.center, player_.len.x + player_.sizeChange.x, player_.len.y + player_.sizeChange.y, &player_.lt, &player_.rt, &player_.lb, &player_.rb);
 
 
-//#ifdef _DEBUG
-//	ImGui::Begin("window");
-//	ImGui::Text("%f", playerShotAngle);
-//	ImGui::InputFloat2("return", &startPosReturn.x);
-//	ImGui::InputFloat2("startpos", &startPosition.x);
-//	ImGui::End();
-//#endif // _DEBUG
+#ifdef _DEBUG
+	ImGui::Begin("window");
+	ImGui::Text("%f", playerShotAngle);
+	ImGui::InputFloat2("return", &startPosReturn.x);
+	ImGui::InputFloat2("startpos", &startPosition.x);
+	ImGui::End();
+#endif // _DEBUG
 #ifdef _DEBUG
 	/*ImGui::Begin("window");
 	ImGui::Text("%f, %f", vec.x, vec.y);
@@ -196,10 +218,19 @@ void PlayerClass::Update(const char* keys, const char* preKeys)
 void PlayerClass::Draw()
 {
 	if (!isShot && !isMove && !isReturn) {
+		Novice::DrawBox(int(player_.worldPos.x - 5.0f) + int(*scroll_), int(player_.worldPos.y), 10, 150, playerShotAngle, WHITE, kFillModeSolid);
 		Novice::DrawLine(int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y), int(player_.worldPos.x + (viewDir.x * 40.0f)) + int(*scroll_), int(player_.worldPos.y + (viewDir.y * 40.0f)), 0xFFFFFFFF);
 	}
-	if (isMove || isShot) {
-		Novice::DrawLine(int(startPosition.x) + int(*scroll_), int(startPosition.y - 16.0f), int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y - 16.0f), 0xFFFFFFFF);
+	Vector2 a = startPosition - player_.worldPos;
+	float angle = std::atan2(-a.x, a.y);
+	if (isShot) {
+		Novice::DrawSpriteRect(int(player_.worldPos.x + 5.0f) + int(*scroll_), int(player_.worldPos.y) - 16, 0, 0, 10, int(Length(startPosition - player_.worldPos)), tyouTex, 1.0f, Length(startPosition - player_.worldPos) / 720.0f, angle, WHITE);
+		//Novice::DrawLine(int(startPosition.x) + int(*scroll_), int(startPosition.y - 16.0f), int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y - 16.0f), 0xFFFFFFFF);
+	}
+	/*Vector2 a = startPosition - player_.worldPos;
+	float angle = std::atan2(a.x, -a.y);*/
+	if (isMove) {
+		Novice::DrawSpriteRect(int(player_.worldPos.x + 5.0f) + int(*scroll_), int(player_.worldPos.y) - 16, 0, 0, 10, int(Length(startPosition - player_.worldPos)), tyouTex, 1.0f, Length(startPosition - player_.worldPos) / 720.0f, angle, WHITE);
 	}
 	Novice::DrawQuad(
 		int(topPosition.x - (player_.len.x + player_.sizeChange.x) / 2) + int(*scroll_), int(topPosition.y - (player_.len.y + player_.sizeChange.y) / 2 - blockSize),
@@ -215,9 +246,8 @@ void PlayerClass::Draw()
 		0, 0, blockSize, blockSize, playerTex, 0xFFFFFFFF);
 }
 
-void PlayerClass::AngleSet(const char* keys, const char* preKeys)
+void PlayerClass::AngleSet(const char* keys, const char* preKeys, XINPUT_STATE& joyState, XINPUT_STATE& beforeJpyState)
 {
-	XINPUT_STATE joyState;
 	// 射出方向を決定
 	if (!isShot && !isMove && !isReturn) {
 		player_.direction = { 0,0 };
@@ -260,9 +290,11 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 	}
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A && !isShot && !isMove && !isReturn) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A && beforeJpyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A && !isShot && !isMove && !isReturn) {
 			isShot = true;
 			startPosReturn = player_.worldPos;
+			beforeJpyState = joyState;
+			shootAngle = playerShotAngle;
 		}
 	}
 	else {
@@ -270,6 +302,7 @@ void PlayerClass::AngleSet(const char* keys, const char* preKeys)
 		if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] != 0 && !isShot && !isMove && !isReturn) {
 			isShot = true;
 			startPosReturn = player_.worldPos;
+			shootAngle = playerShotAngle;
 		}
 	}
 }
@@ -330,8 +363,8 @@ void PlayerClass::RefrectMoving()
 			t1 = 0;
 
 			stopPosition = player_.worldPos;
-
-			playerShotAngle = 0;
+			Vector2 a = startPosition - player_.worldPos;
+			playerShotAngle = std::atan2(a.x, -a.y);
 			tReturnNow = 0;
 		}
 	}
@@ -359,7 +392,7 @@ void PlayerClass::Shooting()
 	}
 }
 
-void PlayerClass::Operation(const char* keys)
+void PlayerClass::Operation(const char* keys, XINPUT_STATE& joyState)
 {
 	if (!isShot && isMove) {
 
@@ -379,7 +412,6 @@ void PlayerClass::Operation(const char* keys)
 				kabe = false;
 			}
 			GetSpeed(player_, speed, startPosition, kMoveChangeAngle);
-			XINPUT_STATE joyState;
 			Vector2 move{ 0, 0 };
 			float angle = playerShotAngle;
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
