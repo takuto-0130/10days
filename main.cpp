@@ -149,6 +149,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		audio->SetVolume(BGM, 1.0f);
 		switch (scene) {
 		case Scene::Title:
+			audio->StopWave(BGM);
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A) && !next) {
 					if (!isController) {
@@ -176,6 +177,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				fadeTimer++;
 			}
 			else if (next == true) {
+				audio->PlayWave(BGM, true);
 				scene = Scene::Select;
 				fadeTimer = 0;
 			}
