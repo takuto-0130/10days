@@ -97,7 +97,7 @@ private:
 	const int kStageChangeTime = 20;
 	const float kStageChangeCo = 0.1f;
 	const float kButtonCo_ = 0.05f;
-	const int kHumanPopTime_ = 300;
+	const int kHumanPopTime_ = 10;
 
 	int buttonTime_ = 0;
 	float poyonTime_ = 0;

@@ -751,7 +751,7 @@ void Select::HumanUpdate()
 		theta_ = 0;
 	}*/
 
-	if (human_.center.x <= -400)
+	if (human_.center.x <= -360)
 	{
 		isPopHuman_ = false;
 		theta_ = 0;
