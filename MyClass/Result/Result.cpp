@@ -46,7 +46,7 @@ void Result::Initialize()
 	bg_.rad = { 1280.0f,720.0f };
 	QuadVer(bg_.center, bg_.rad.x, bg_.rad.y, bg_.LT, bg_.RT, bg_.LB, bg_.RB);
 
-	star_[0].center = { 100.0f,50.0f };
+	star_[0].center = { 150.0f,50.0f };
 	star_[1].center = { 1200.0f,650.0f };
 	star_[2].center = { 1170.0f,70.0f };
 	star_[3].center = { 1050.0f,90.0f };
@@ -299,12 +299,31 @@ void Result::Draw()
 		numberSize_ * num_[3], 0, numberSize_, numberSize_,
 		numberTextureYellow_, WHITE);
 
-	Novice::DrawQuad((int)stageNum_.LT.x, (int)stageNum_.LT.y,
-		(int)stageNum_.RT.x, (int)stageNum_.RT.y,
-		(int)stageNum_.LB.x, (int)stageNum_.LB.y,
-		(int)stageNum_.RB.x, (int)stageNum_.RB.y,
-		numberSize_ * stageNumber_, 0, numberSize_, numberSize_,
-		numberTextureRed_, WHITE);
+	if (stageNumber_ < 10)
+	{
+		Novice::DrawQuad((int)stageNum_.LT.x, (int)stageNum_.LT.y,
+			(int)stageNum_.RT.x, (int)stageNum_.RT.y,
+			(int)stageNum_.LB.x, (int)stageNum_.LB.y,
+			(int)stageNum_.RB.x, (int)stageNum_.RB.y,
+			numberSize_ * stageNumber_, 0, numberSize_, numberSize_,
+			numberTextureRed_, WHITE);
+	}
+	else
+	{
+		Novice::DrawQuad((int)stageNum_.LT.x - 20, (int)stageNum_.LT.y,
+			(int)stageNum_.RT.x - 20, (int)stageNum_.RT.y,
+			(int)stageNum_.LB.x - 20, (int)stageNum_.LB.y,
+			(int)stageNum_.RB.x - 20, (int)stageNum_.RB.y,
+			numberSize_ * 1, 0, numberSize_, numberSize_,
+			numberTextureRed_, WHITE);
+
+		Novice::DrawQuad((int)stageNum_.LT.x + 20, (int)stageNum_.LT.y,
+			(int)stageNum_.RT.x + 20, (int)stageNum_.RT.y,
+			(int)stageNum_.LB.x + 20, (int)stageNum_.LB.y,
+			(int)stageNum_.RB.x + 20, (int)stageNum_.RB.y,
+			numberSize_ * (stageNumber_ - 10), 0, numberSize_, numberSize_,
+			numberTextureRed_, WHITE);
+	}
 
 	Novice::DrawQuad((int)stage_.LT.x, (int)stage_.LT.y,
 		(int)stage_.RT.x, (int)stage_.RT.y,

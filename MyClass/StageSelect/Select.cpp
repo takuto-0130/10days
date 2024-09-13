@@ -56,7 +56,7 @@ void Select::Initialize()
 	QuadVer(bg_.center, bg_.rad.x, bg_.rad.y, bg_.LT, bg_.RT, bg_.LB, bg_.RB);
 	
 
-	star_[0].center = {100.0f,50.0f};
+	star_[0].center = {150.0f,50.0f};
 	star_[1].center = { 1200.0f,650.0f };
 	star_[2].center = { 1170.0f,70.0f };
 	star_[3].center = { 1050.0f,90.0f };
