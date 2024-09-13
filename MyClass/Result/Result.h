@@ -38,7 +38,7 @@ public:
 private:
 
 	int bgTexture_ = 0;
-	int starTexture_ = 0;
+	int starTexture_[3];
 	int uiTexture_[2];
 	int forUITexture_[2];
 	int buttonTexture_ = 0;
@@ -53,7 +53,7 @@ private:
 	int evaluationTex_ = 0;
 
 	Quad bg_{};
-	Quad star_{};
+	Quad star_[9];
 	Quad ui_[2];
 	Quad button_{};
 	Quad underBar_{};
@@ -73,7 +73,7 @@ private:
 	const float kEvaluationCount = 0.1f;
 	const int kScoreCT = 30;
 
-	int starTime_ = 0;
+	int starTime_[9];
 	float buttonTime_ = 0;
 	float buttonCount_ = 0.05f;
 	float humanCount = 0.05f;
@@ -83,7 +83,8 @@ private:
 	float evaluationEasTime_ = 0;
 	int scoreCT_ = 0;
 
-	bool isStarDraw_ = true;
+	bool isStarDraw_[9];
+
 	bool isEvaluationDraw_ = false;
 	bool isHumanDraw_ = false;
 	bool isPopHuman_ = false;
@@ -104,6 +105,8 @@ private:
 	int num_[4];
 	int numberSize_ = 64;
 
+	int starSize_ = 64;
+
 	Vector2 buttonStartRad_{};
 	Vector2 buttonStopRad_{};
 
@@ -116,4 +119,6 @@ private:
 	Vector2 evaluationStopTPos_{};
 	Vector2 evaluationStartBPos_{};
 	Vector2 evaluationStopBPos_{};
+
+	Vector2 humanSize = { 360,210 };
 };

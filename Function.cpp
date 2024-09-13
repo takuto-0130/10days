@@ -159,7 +159,7 @@ void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& st
 		map.mapData[int(player.lt.y) / blockSize][int(player.lt.x) / blockSize] = 0;
 		player.resistance += resist;
 		stopTimer = stopFrame;
-		emitter->Emit({ float((int(player.lt.x)) + blockSize / 2), float((int(player.lt.y)) - blockSize / 2) });
+		emitter->Emit(player.worldPos);
 		breakCount++;
 	}
 
@@ -167,7 +167,7 @@ void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& st
 		map.mapData[int(player.rt.y) / blockSize][int(player.rt.x) / blockSize] = 0;
 		player.resistance += resist;
 		stopTimer = stopFrame;
-		emitter->Emit({ float((int(player.rt.x)) - blockSize / 2), float((int(player.rt.y)) - blockSize / 2) });
+		emitter->Emit(player.worldPos);
 		breakCount++;
 	}
 
@@ -175,7 +175,7 @@ void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& st
 		map.mapData[int(player.lb.y) / blockSize][int(player.lb.x) / blockSize] = 0;
 		player.resistance += resist;
 		stopTimer = stopFrame;
-		emitter->Emit({ float((int(player.lb.x)) + blockSize / 2), float((int(player.lb.y)) + blockSize / 2) });
+		emitter->Emit(player.worldPos);
 		breakCount++;
 	}
 
@@ -183,7 +183,7 @@ void CollisionBlock(MapChipNum& map, Player& player, const float resist, int& st
 		map.mapData[int(player.rb.y) / blockSize][int(player.rb.x) / blockSize] = 0;
 		player.resistance += resist;
 		stopTimer = stopFrame;
-		emitter->Emit({ float((int(player.rb.x)) - blockSize / 2), float((int(player.rb.y)) + blockSize / 2) });
+		emitter->Emit(player.worldPos);
 		breakCount++;
 	}
 }

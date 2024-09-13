@@ -7,6 +7,7 @@
 #include "Easing.h"
 
 const int kStageNum = 12;
+const int kStarNum = 9;
 
 struct Matrix2x2
 {
@@ -75,7 +76,7 @@ private:
 	int scoreFontTexter_ = 0;
 
 	Quad bg_{};
-	Quad star_[6];
+	Quad star_[kStarNum];
 	Quad stage_[kStageNum];
 	Quad number_[4][5];
 	Quad arrow_[2];
@@ -98,7 +99,7 @@ private:
 
 	int buttonTime_ = 0;
 	float poyonTime_ = 0;
-	int starTime_[6];
+	int starTime_[kStarNum];
 	int stageChangeInterval_ = 0;
 	float stageChangeTime_ = 0;
 	float arrowTimeCo = 0.02f;
@@ -106,7 +107,7 @@ private:
 	int humanPopTime_ = 0;
 	float theta_ = 0;
 
-	int isStarDraw_[6];
+	bool isStarDraw_[kStarNum];
 
 	int num_[4][5];
 	int numberSize_ = 64;

@@ -44,16 +44,19 @@ void Select::Initialize()
 	
 
 	star_[0].center = {100.0f,50.0f};
-	star_[1].center = { 50.0f,50.0f };
-	star_[2].center = { 50.0f,50.0f };
-	star_[3].center = { 50.0f,50.0f };
-	star_[4].center = { 50.0f,50.0f };
-	star_[5].center = { 50.0f,50.0f };
-	for (int i = 0; i < 6; i++)
+	star_[1].center = { 1200.0f,650.0f };
+	star_[2].center = { 1170.0f,70.0f };
+	star_[3].center = { 1050.0f,90.0f };
+	star_[4].center = { 250.0f,600.0f };
+	star_[5].center = { 440.0f,110.0f };
+	star_[6].center = { 130.0f,350.0f };
+	star_[7].center = { 710.0f,700.0f };
+	star_[8].center = { 660.0f,300.0f };
+	for (int i = 0; i < kStarNum; i++)
 	{
 		star_[i].rad = { 32.0f,32.0f };
 		QuadVer(star_[i].center, star_[i].rad.x, star_[i].rad.y, star_[i].LT, star_[i].RT, star_[i].LB, star_[i].RB);
-		isStarDraw_[i] = 1;
+		isStarDraw_[i] = true;
 	}
 
 	stage_[0].center = { 640.0f,360.0f };
@@ -87,7 +90,7 @@ void Select::Initialize()
 	scoreFont_.rad = { 240,60 };
 	QuadVer(scoreFont_.center, scoreFont_.rad.x, scoreFont_.rad.y, scoreFont_.LT, scoreFont_.RT, scoreFont_.LB, scoreFont_.RB);
 
-	stageNumber_.center = { 380 ,220 };
+	stageNumber_.center = { 900 ,220 };
 	stageNumber_.rad = { 400,160 };
 	QuadVer(stageNumber_.center, stageNumber_.rad.x, stageNumber_.rad.y, stageNumber_.LT, stageNumber_.RT, stageNumber_.LB, stageNumber_.RB);
 
@@ -99,10 +102,13 @@ void Select::Initialize()
 	buttonTime_ = kButtonTime;
 	starTime_[0] = kStarTime;
 	starTime_[1] = 110;
-	starTime_[2] = 90;
+	starTime_[2] = 180;
 	starTime_[3] = 70;
-	starTime_[4] = 40;
-	starTime_[5] = 10;
+	starTime_[4] = 30;
+	starTime_[5] = 210;
+	starTime_[6] = 10;
+	starTime_[7] = 170;
+	starTime_[8] = 80;
 	stageChangeInterval_ = kStageChangeTime;
 	stageChangeTime_ = 0;
 	arrowTime_ = 0;
@@ -234,9 +240,35 @@ void Select::Draw()
 		0, 0, (int)bg_.rad.x, (int)bg_.rad.y,
 		bgTexture_, 0x191970ff);
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		if (isStarDraw_[i] == 1)
+		if (isStarDraw_[i] == true)
+		{
+			Novice::DrawQuad((int)star_[i].LT.x, (int)star_[i].LT.y,
+				(int)star_[i].RT.x, (int)star_[i].RT.y,
+				(int)star_[i].LB.x, (int)star_[i].LB.y,
+				(int)star_[i].RB.x, (int)star_[i].RB.y,
+				0, 0, starSize_, starSize_,
+				starTexture_[0], WHITE);
+		}
+	}
+
+	for (int i = 3; i < 6; i++)
+	{
+		if (isStarDraw_[i] == true)
+		{
+			Novice::DrawQuad((int)star_[i].LT.x, (int)star_[i].LT.y,
+				(int)star_[i].RT.x, (int)star_[i].RT.y,
+				(int)star_[i].LB.x, (int)star_[i].LB.y,
+				(int)star_[i].RB.x, (int)star_[i].RB.y,
+				0, 0, starSize_, starSize_,
+				starTexture_[1], WHITE);
+		}
+	}
+
+	for (int i = 6; i < 9; i++)
+	{
+		if (isStarDraw_[i] == true)
 		{
 			Novice::DrawQuad((int)star_[i].LT.x, (int)star_[i].LT.y,
 				(int)star_[i].RT.x, (int)star_[i].RT.y,
@@ -433,13 +465,13 @@ void Select::StageSelectUpdate()
 
 	if (stageNum_  < 10)
 	{
-		stageNumber_.center = { 380 ,220 };
+		stageNumber_.center = { 900 ,220 };
 		stageNumber_.rad = { 400,160 };
 		stageNumSize_ = { 500,200 };
 	}
 	else
 	{
-		stageNumber_.center = { 420 ,220 };
+		stageNumber_.center = { 850 ,220 };
 		stageNumber_.rad = { 500,160 };
 		stageNumSize_ = { 600,200 };
 	}
@@ -449,18 +481,18 @@ void Select::StageSelectUpdate()
 
 void Select::StarUpdate()
 {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < kStarNum; i++)
 	{
 		if (starTime_[i] >= 0)
 		{
 			starTime_[i] -= kTimeCount;
 		}
-		else if (isStarDraw_)
+		else if (isStarDraw_[i])
 		{
 			isStarDraw_[i] = false;
 			starTime_[i] = kStarEraseTime;
 		}
-		else if (!isStarDraw_)
+		else if (!isStarDraw_[i])
 		{
 			isStarDraw_[i] = true;
 			starTime_[i] = kStarTime;
