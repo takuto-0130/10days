@@ -23,18 +23,18 @@ void Select::Initialize()
 	stageTexture_[10] = Novice::LoadTexture("./Resources/white1x1.png"); // 0x4169e1ff
 	stageTexture_[11] = Novice::LoadTexture("./Resources/white1x1.png"); // 0xff4500ff
 
-	stagePreviewTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[2] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[3] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[4] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[5] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[6] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[7] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[8] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[9] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[10] = Novice::LoadTexture("./Resources/StageSelect/player.png");
-	stagePreviewTexture_[11] = Novice::LoadTexture("./Resources/StageSelect/player.png");
+	stagePreviewTexture_[0] = Novice::LoadTexture("./Resources/stageMap/stage_1.png");
+	stagePreviewTexture_[1] = Novice::LoadTexture("./Resources/stageMap/stage_2.png");
+	stagePreviewTexture_[2] = Novice::LoadTexture("./Resources/stageMap/stage_3.png");
+	stagePreviewTexture_[3] = Novice::LoadTexture("./Resources/stageMap/stage_4.png");
+	stagePreviewTexture_[4] = Novice::LoadTexture("./Resources/stageMap/stage_5.png");
+	stagePreviewTexture_[5] = Novice::LoadTexture("./Resources/stageMap/stage_6.png");
+	stagePreviewTexture_[6] = Novice::LoadTexture("./Resources/stageMap/stage_7.png");
+	stagePreviewTexture_[7] = Novice::LoadTexture("./Resources/stageMap/stage_8.png");
+	stagePreviewTexture_[8] = Novice::LoadTexture("./Resources/stageMap/stage_9.png");
+	stagePreviewTexture_[9] = Novice::LoadTexture("./Resources/stageMap/stage_10.png");
+	stagePreviewTexture_[10] = Novice::LoadTexture("./Resources/stageMap/stage_11.png");
+	stagePreviewTexture_[11] = Novice::LoadTexture("./Resources/stageMap/stage_12.png");
 
 	arrowTexture_[0] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
 	arrowTexture_[1] = Novice::LoadTexture("./Resources/StageSelect/arrow.png");
@@ -478,8 +478,7 @@ void Select::Draw()
 			(int)stagePreview_.LB.x, (int)stagePreview_.LB.y,
 			(int)stagePreview_.RB.x, (int)stagePreview_.RB.y,
 			0, 0, (int)stagePreview_.rad.x, (int)stagePreview_.rad.y,
-			stageTexture_[0], WHITE);
-		previewDraw_;
+			previewDraw_, WHITE);
 	}
 
 	Novice::DrawQuad((int)ui_.LT.x, (int)ui_.LT.y,
