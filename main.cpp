@@ -230,10 +230,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)] && !next)
 			{
-				stageSelect->Initialize();
-				stageSelect->SetHighScore();
-				next = true;
-				audio->PlayWave(SE_click);
+				if (!isController) {
+					stageSelect->Initialize();
+					stageSelect->SetHighScore();
+					next = true;
+					audio->PlayWave(SE_click);
+					fadeTimer = 0;
+				}
+				if (isController) {
+					isController = false;
+				}
 			}
 
 			if (fadeTimer < kTitleSelectFadeTimer) {
