@@ -42,6 +42,7 @@ private:
 	int playerTex = 0;	// プレイヤーのテクスチャハンドル
 	int playerTex2 = 0;	// プレイヤーのテクスチャハンドル
 	int tyouTex = 0;	// プレイヤーのテクスチャハンドル
+	int arrowTex = 0;	// プレイヤーのテクスチャハンドル
 
 	Vector2 topPosition = kResetPos;	//プレイヤーの射出後にとまった位置
 

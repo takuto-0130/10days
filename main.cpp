@@ -50,6 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int titleTex = Novice::LoadTexture("./Resources/title.png");
 	int controllerTex = Novice::LoadTexture("./Resources/controller.png");
 	int aTex = Novice::LoadTexture("./Resources/StageSelect/A.png");
+	int endTex = Novice::LoadTexture("./Resources/stage/end.png");
 #pragma endregion
 
 	// グローバル変数の読み込み
@@ -344,7 +345,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				else {
 					stageSelect->SetHighScore();
-					scene = Scene::Select;
 					scene = Scene::Title;
 					blockParticle->Erase();
 				}
@@ -494,10 +494,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #endif // !_DEBUG
 			if (endTimer > 1) {
 				if (endTimer < kEndAnimationTime) {
-					Novice::DrawBox(1280 - int(1280.0f * float(endTimer) / float(kEndAnimationTime)), 170, 1280, 380, 0.0f, 0x443399FF, kFillModeSolid);
+					Novice::DrawSprite(1280 - int(1280.0f * float(endTimer) / float(kEndAnimationTime)), 170, endTex, 1.0f, 1.0f,  0.0f, WHITE);
 				}
 				else {
-					Novice::DrawBox(0, 170, 1280, 380, 0.0f, 0x443399FF, kFillModeSolid);
+					Novice::DrawSprite(0, 170, endTex, 1.0f, 1.0f, 0.0f, WHITE);
 				}
 			}
 			beforeScore = score;

@@ -45,6 +45,7 @@ PlayerClass::PlayerClass(MapChipNum* map, float* scroll, Stage* stage)
 	playerTex = Novice::LoadTexture("./Resources/stage/leg.png");
 	playerTex2 = Novice::LoadTexture("./Resources/stage/body.png");
 	tyouTex = Novice::LoadTexture("./Resources/stage/long_tyo.png");
+	arrowTex = Novice::LoadTexture("./Resources/stage/arrow.png");
 
 	start1 = {};
 	stop1 = {};
@@ -218,8 +219,7 @@ void PlayerClass::Update(const char* keys, const char* preKeys, XINPUT_STATE& jo
 void PlayerClass::Draw()
 {
 	if (!isShot && !isMove && !isReturn) {
-		Novice::DrawBox(int(player_.worldPos.x - 5.0f) + int(*scroll_), int(player_.worldPos.y), 10, 150, playerShotAngle, WHITE, kFillModeSolid);
-		Novice::DrawLine(int(player_.worldPos.x) + int(*scroll_), int(player_.worldPos.y), int(player_.worldPos.x + (viewDir.x * 40.0f)) + int(*scroll_), int(player_.worldPos.y + (viewDir.y * 40.0f)), 0xFFFFFFFF);
+		Novice::DrawSprite(int(player_.worldPos.x - 5.0f) + int(*scroll_), int(player_.worldPos.y), arrowTex, 1.0f, 1.0f, playerShotAngle, WHITE);
 	}
 	Vector2 a = startPosition - player_.worldPos;
 	float angle = std::atan2(-a.x, a.y);
