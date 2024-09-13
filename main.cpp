@@ -14,10 +14,10 @@
 
 const char kWindowTitle[] = "10daysTest";
 
-void ApplyTime(Stage* stage_, int32_t& kPlayTime) {
+void ApplyTime(Stage& stage_, int32_t& kPlayTime) {
 	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
 	const char* groupName = "StageTime";
-	switch (*stage_) {
+	switch (stage_) {
 	case Stage::Stage1:
 		kPlayTime = globalVariables->GetIntValue(groupName, "Stage1");
 		break;
@@ -201,6 +201,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 
+		ApplyTime(*stage, kPlayTime);
 		// グローバル変数の更新処理
 		GlobalVariables::GetInstance()->Update();
 #ifdef _DEBUG
@@ -261,7 +262,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						MaxBreakCountSearch(maxBreakCount, startMap);
 						beforeJoyState = joyState;
 						audio->PlayWave(SE_click);
-						ApplyTime(stage, kPlayTime);
 					}
 				}
 				else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
@@ -275,7 +275,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					playerClass->Initialize();
 					MaxBreakCountSearch(maxBreakCount, startMap);
 					audio->PlayWave(SE_click);
-					ApplyTime(stage, kPlayTime);
+					ApplyTime(*stage, kPlayTime);
 				}
 
 
@@ -385,7 +385,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							breakCount = 0;
 							playerClass->Initialize();
 							MaxBreakCountSearch(maxBreakCount, startMap);
-							ApplyTime(stage, kPlayTime);
+							ApplyTime(*stage, kPlayTime);
 						}
 					}
 					else {
@@ -409,7 +409,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						playerClass->Initialize();
 						MaxBreakCountSearch(maxBreakCount, startMap);
 						blockParticle->Erase();
-						ApplyTime(stage, kPlayTime);
+						ApplyTime(*stage, kPlayTime);
 					}
 				}
 				else {
