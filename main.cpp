@@ -48,7 +48,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int scoreFrame = Novice::LoadTexture("./Resources/stage/score_frame.png");
 	int scoreGauge = Novice::LoadTexture("./Resources/stage/score.png");
 	int titleTex = Novice::LoadTexture("./Resources/title.png");
-
+	int controllerTex = Novice::LoadTexture("./Resources/controller.png");
+	int aTex = Novice::LoadTexture("./Resources/StageSelect/A.png");
 #pragma endregion
 
 	// グローバル変数の読み込み
@@ -119,6 +120,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	bool isController = true;
 
+	const int kTitleSelectFadeTimer = 90;
+	int fadeTimer = 0;
+
+	bool next = false;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -131,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		
+
 		// グローバル変数の更新処理
 		GlobalVariables::GetInstance()->Update();
 #ifdef _DEBUG
@@ -144,12 +150,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::Title:
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
-					if(!isController) {
+					if (!isController) {
 						stageSelect->Initialize();
 						stageSelect->SetHighScore();
-						scene = Scene::Select;
+						next = true;
 						beforeJoyState = joyState;
 						audio->PlayWave(SE_click);
+						fadeTimer = 0;
 					}
 					if (isController) {
 						isController = false;
@@ -160,14 +167,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				stageSelect->Initialize();
 				stageSelect->SetHighScore();
-				scene = Scene::Select;
+				next = true;
 				audio->PlayWave(SE_click);
+			}
+
+			if (fadeTimer < kTitleSelectFadeTimer) {
+				fadeTimer++;
+			}
+			else if (next == true) {
+				scene = Scene::Select;
+				fadeTimer = 0;
 			}
 			break;
 		case Scene::Select:
-			stageSelect->Update(keys, preKeys);
-			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+			if (fadeTimer < kTitleSelectFadeTimer) {
+				fadeTimer++;
+			}
+			else {
+				stageSelect->Update(keys, preKeys);
+				if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+					if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
+						mapLoad->Update(stageSelect->GetStageNum());
+						startMap = map;
+						scene = Scene::Game;
+						playTimer = kPlayTime;
+						breakCount = 0;
+						playerClass->Initialize();
+						MaxBreakCountSearch(maxBreakCount, startMap);
+						beforeJoyState = joyState;
+						audio->PlayWave(SE_click);
+					}
+				}
+				else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
+				{
+					// スペース押したらSutageNum（ステージ番号）取得
 					mapLoad->Update(stageSelect->GetStageNum());
 					startMap = map;
 					scene = Scene::Game;
@@ -175,35 +208,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					breakCount = 0;
 					playerClass->Initialize();
 					MaxBreakCountSearch(maxBreakCount, startMap);
-					beforeJoyState = joyState;
 					audio->PlayWave(SE_click);
 				}
-			}
-			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
-			{
-				// スペース押したらSutageNum（ステージ番号）取得
-				mapLoad->Update(stageSelect->GetStageNum());
-				startMap = map;
-				scene = Scene::Game;
-				playTimer = kPlayTime;
-				breakCount = 0;
-				playerClass->Initialize();
-				MaxBreakCountSearch(maxBreakCount, startMap);
-				audio->PlayWave(SE_click);
-			}
 
 
-			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
+				if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+					if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
+						scene = Scene::Title;
+						beforeJoyState = joyState;
+						audio->PlayWave(SE_click);
+						next = false;
+					}
+				}
+				else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
+				{
 					scene = Scene::Title;
-					beforeJoyState = joyState;
 					audio->PlayWave(SE_click);
+					next = false;
 				}
-			}
-			else if (keys[(DIK_BACKSPACE)] && !preKeys[(DIK_BACKSPACE)])
-			{
-				scene = Scene::Title;
-				audio->PlayWave(SE_click);
 			}
 			break;
 		case Scene::Game:
@@ -296,6 +318,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					else {
 						scene = Scene::Title;
+						next = false;
 					}
 					beforeJoyState = joyState;
 					audio->PlayWave(SE_click);
@@ -368,12 +391,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		switch (scene) {
 		case Scene::Title:
 			Novice::DrawSprite(0, 0, titleTex, 1.0f, 1.0f, 0.0f, WHITE);
+			if (fadeTimer < kTitleSelectFadeTimer) {
+				if(next)
+				{
+					int alpha = int(255.0f * (float(fadeTimer) / float(kTitleSelectFadeTimer)));
+					Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x00000000 + alpha, kFillModeSolid);
+					if (fadeTimer == 0) {
+						Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+					}
+				}
+			}
+			else {
+				if (next)
+				{
+					Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
+				}
+			}
 			if (isController) {
-
+				Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x111122FF, kFillModeSolid);
+				Novice::DrawSprite(440, 150, controllerTex, 1.0f, 1.0f, 0.0f, WHITE);
+				Novice::DrawSprite(840, 485, aTex, 1.0f, 1.0f, 0.0f, WHITE);
 			}
 			break;
 		case Scene::Select:
 			stageSelect->Draw();
+			if (fadeTimer < kTitleSelectFadeTimer) {
+				int alpha = int(255.0f * (float(fadeTimer) / float(kTitleSelectFadeTimer)));
+				Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK - alpha, kFillModeSolid);
+			}
 			break;
 		case Scene::Game:
 #pragma region // ゲームシーン描画
@@ -409,14 +454,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			playerClass->Draw();
 			DrawScoreGauge(breakCount, maxBreakCount, scoreFrame, scoreGauge);
 #ifndef _DEBUG
-			Novice::DrawSprite(0, 0, timeFrame, 0.7f,0.7f, 0.0f, WHITE);
+			Novice::DrawSprite(0, 0, timeFrame, 0.7f, 0.7f, 0.0f, WHITE);
 			if (playTimer > 599) {
 				for (int i = 0; i < 2; i++)
 				{
 					Novice::DrawSpriteRect(13 + 43 * i, 18, 64 * timeDisplay.seconds[i], 0, 64, 64, blueNumberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 				}
 			}
-			else if(playTimer > 359)
+			else if (playTimer > 359)
 			{
 				Novice::DrawSpriteRect(33, 18, 64 * timeDisplay.seconds[1], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 			}
@@ -428,7 +473,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawSprite(490, 620, scoreFukidasi, 1.0f, 0.8f, 0.0f, WHITE);;
 			for (int i = 0; i < 4; i++)
 			{
-				if(score.num[i] == beforeScore.num[i])
+				if (score.num[i] == beforeScore.num[i])
 				{
 					Novice::DrawSpriteRect(548 + 43 * i, 632, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 				}
@@ -453,9 +498,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		
 
-		
+
+
 
 		///
 		/// ↑描画処理ここまで
@@ -468,9 +513,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
 			break;
 		}
-	}
+			}
 
 	// ライブラリの終了
 	Novice::Finalize();
 	return 0;
-}
+		}
