@@ -389,7 +389,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						}
 					}
 					else {
-						scene = Scene::Title;
+						stageSelect->SetHighScore();
+						scene = Scene::Select;
 						next = false;
 					}
 					beforeJoyState = joyState;
