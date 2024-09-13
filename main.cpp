@@ -39,12 +39,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int bgTex = Novice::LoadTexture("./Resources/stage/backGround.png");
 	int block = Novice::LoadTexture("white1x1.png");
 
-#ifndef _DEBUG
 	int numberTex = Novice::LoadTexture("./Resources/numberTex.png");
 	int blueNumberTex = Novice::LoadTexture("./Resources/number/namber_green.png");
 	int timeFrame = Novice::LoadTexture("./Resources/stage/time_frame.png");
 	int scoreFukidasi = Novice::LoadTexture("./Resources/stage/score_fukidasi.png");
-#endif // !_DEBUG
 	int scoreFrame = Novice::LoadTexture("./Resources/stage/score_frame.png");
 	int scoreGauge = Novice::LoadTexture("./Resources/stage/score.png");
 	int titleTex = Novice::LoadTexture("./Resources/title.png");
@@ -126,6 +124,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	bool next = false;
 
+	Stage* stage = &mapLoad->GetNowStage();
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -138,6 +138,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+
+		switch (*stage) {
+		case Stage::Stage1:
+			break;
+		case Stage::Stage2:
+			break;
+		case Stage::Stage3:
+			break;
+		case Stage::Stage4:
+			break;
+		case Stage::Stage5:
+			break;
+		case Stage::Stage6:
+			break;
+		case Stage::Stage7:
+			break;
+		case Stage::Stage8:
+			break;
+		case Stage::Stage9:
+			break;
+		case Stage::Stage10:
+			break;
+		case Stage::Stage11:
+			break;
+		case Stage::Stage12:
+			break;
+		}
 
 		// グローバル変数の更新処理
 		GlobalVariables::GetInstance()->Update();
@@ -465,7 +492,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			playerClass->Draw();
 			DrawScoreGauge(breakCount, maxBreakCount, scoreFrame, scoreGauge);
-#ifndef _DEBUG
 			Novice::DrawSprite(0, 0, timeFrame, 0.7f, 0.7f, 0.0f, WHITE);
 			if (playTimer > 599) {
 				for (int i = 0; i < 2; i++)
@@ -493,7 +519,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Novice::DrawSpriteRect(548 + 43 * i, 622, 64 * score.num[i], 0, 64, 64, numberTex, 1.0f / 12.0f, 1.0f / 1.2f, 0.0f, 0xFFFFFFFF);
 				}
 			}
-#endif // !_DEBUG
 			if (endTimer > 1) {
 				if (endTimer < kEndAnimationTime) {
 					Novice::DrawSprite(1280 - int(1280.0f * float(endTimer) / float(kEndAnimationTime)), 170, endTex, 1.0f, 1.0f,  0.0f, WHITE);
