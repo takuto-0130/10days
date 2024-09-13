@@ -47,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #endif // !_DEBUG
 	int scoreFrame = Novice::LoadTexture("./Resources/stage/score_frame.png");
 	int scoreGauge = Novice::LoadTexture("./Resources/stage/score.png");
+	int titleTex = Novice::LoadTexture("./Resources/title.png");
 
 #pragma endregion
 
@@ -116,6 +117,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kEndAnimationTime = 60;
 	int endTimer = 0;
 
+	bool isController = true;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -141,11 +144,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case Scene::Title:
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_A)) {
-					stageSelect->Initialize();
-					stageSelect->SetHighScore();
-					scene = Scene::Select;
-					beforeJoyState = joyState;
-					audio->PlayWave(SE_click);
+					if(!isController) {
+						stageSelect->Initialize();
+						stageSelect->SetHighScore();
+						scene = Scene::Select;
+						beforeJoyState = joyState;
+						audio->PlayWave(SE_click);
+					}
+					if (isController) {
+						isController = false;
+					}
 				}
 			}
 			else if (keys[(DIK_SPACE)] && !preKeys[(DIK_SPACE)])
@@ -307,7 +315,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 				}
 				else {
-					scene = Scene::Title;
+					stageSelect->SetHighScore();
+					scene = Scene::Select;
 				}
 				audio->PlayWave(SE_click);
 			}
@@ -358,6 +367,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (scene) {
 		case Scene::Title:
+			Novice::DrawSprite(0, 0, titleTex, 1.0f, 1.0f, 0.0f, WHITE);
+			if (isController) {
+
+			}
 			break;
 		case Scene::Select:
 			stageSelect->Draw();
