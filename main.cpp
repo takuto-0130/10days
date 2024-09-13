@@ -286,6 +286,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			blockParticle->Update();
 #pragma endregion
+#ifdef _DEBUG
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
 					historyScore->Update(breakCount);
@@ -298,6 +299,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				scene = Scene::Select;
 			}
+#endif // _DEBUG
+
+			
 
 			break;
 		case Scene::Clear:
@@ -346,7 +350,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				audio->PlayWave(SE_click);
 			}
-
+#ifdef _DEBUG
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 				if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) && (beforeJoyState.Gamepad.wButtons ^ XINPUT_GAMEPAD_B)) {
 					stageSelect->SetHighScore();
@@ -361,6 +365,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				scene = Scene::Select;
 				audio->PlayWave(SE_click);
 			}
+#endif // _DEBUG
+
+			
 			break;
 		}
 
