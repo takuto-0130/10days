@@ -77,40 +77,40 @@ void PlayerClass::Initialize()
 {
 	switch (*stage_) {
 	case Stage::Stage1:
-		kResetPos = { 12 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage2:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage3:
-		kResetPos = { 25 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage4:
-		kResetPos = { 5 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 6 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage5:
-		kResetPos = { 30 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage6:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 26 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage7:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 36 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage8:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 15 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage9:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage10:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 22 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage11:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 21 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	case Stage::Stage12:
-		kResetPos = { 19 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
+		kResetPos = { 38 * blockSize + blockSize / 2, 2 * blockSize + blockSize / 2 };
 		break;
 	}
 	player_.worldPos = kResetPos;
