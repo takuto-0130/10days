@@ -1,9 +1,10 @@
 {
     "Player": {
-        "playerRefrect Distance": 100.0,
+        "blockResistPower default(0.15f)": 0.15000000596046448,
+        "playerRefrect Distance": 250.1999969482422,
         "playerReturn T": 0.009999999776482582,
         "playerScroll T": 0.019999999552965164,
-        "playerShot DistanceLimit": 650.0,
+        "playerShot DistanceLimit": 500.0,
         "playerSpeed": [
             7.0,
             7.0
